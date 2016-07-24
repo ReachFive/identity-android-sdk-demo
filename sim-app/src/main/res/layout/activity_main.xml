@@ -17,7 +17,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login With Facebok  "
+        android:text="Login With Facebook  "
         android:id="@+id/button2"
         android:onClick="onTest2BtClick"
         android:layout_below="@+id/button1"
@@ -50,6 +50,15 @@
         android:onClick="onTest2BtClick"
         android:layout_below="@id/button4"
         android:layout_centerHorizontal="true"  />
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:id="@+id/btn_logout"
+            android:onClick="onTest2BtClick"
+            android:layout_below="@id/button5"
+            android:layout_centerHorizontal="true"  />
 
     <ScrollView
         android:layout_width="wrap_content"
