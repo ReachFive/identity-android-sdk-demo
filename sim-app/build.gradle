@@ -63,5 +63,5 @@ dependencies {
     compile('com.paypal.sdk:paypal-android-sdk:2.14.2') {
         exclude group: 'io.card'
     }
-    compile 'com.sim.sdk:SimSdk-2.2.1-release@aar'
+    compile 'com.sim.sdk:SimSdk-2.2.2-release@aar'
 }
