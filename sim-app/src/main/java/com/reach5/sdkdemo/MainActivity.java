@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
 import com.sim.sdk.R5Client;
 import com.sim.sdk.R5Exception;
 import com.sim.sdk.model.ProviderEnum;
@@ -15,7 +16,7 @@ import com.sim.sdk.model.R5LoginResponse;
 
 import java.util.Arrays;
 
-public class MainActivity extends Activity implements R5Client.R5LoginListener{
+public class MainActivity extends Activity implements R5Client.R5LoginListener {
 
     private ProgressDialog simSDKInitProgressBar;
 
@@ -70,6 +71,12 @@ public class MainActivity extends Activity implements R5Client.R5LoginListener{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         R5Client.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        R5Client.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     protected void onStop() {
