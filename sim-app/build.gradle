@@ -53,7 +53,6 @@ dependencies {
     compile 'com.android.support:multidex:1.0.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.0.0'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.6.0'
     compile 'com.mcxiaoke.volley:library:1.0.+'
     compile 'com.facebook.android:facebook-android-sdk:4.1.0'
     compile 'com.google.android.gms:play-services:9.2.0'    
@@ -63,5 +62,5 @@ dependencies {
     compile('com.paypal.sdk:paypal-android-sdk:2.14.2') {
         exclude group: 'io.card'
     }
-    compile 'com.sim.sdk:SimSdk-2.3.0-release@aar'
+    compile 'com.sim.sdk:SimSdk-2.3.1-release@aar'
 }
