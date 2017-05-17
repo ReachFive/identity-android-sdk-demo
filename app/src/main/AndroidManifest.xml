@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.reach5.sdkdemo" >
+<manifest   xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            package="com.reach5.sdkdemo" >
 
     <uses-sdk android:minSdkVersion="14" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET" />
-    <!--<uses-permission android:name="android.permission.GET_ACCOUNTS" />-->
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:name="android.support.multidex.MultiDexApplication"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
 
-        <meta-data android:name="io.fabric.ApiKey" android:value="7dd43e6e31db3220e855f64c3bd94ee4bfcdabfa" />
+        <activity
+                android:name="com.reach5.android.ui.R5LoginActivity"
+                android:screenOrientation="portrait" />
 
         <activity android:name="com.facebook.FacebookActivity"
-                  android:configChanges=
-                          "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+                  android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
                   android:theme="@android:style/Theme.Translucent.NoTitleBar"
-                  android:label="@string/app_name" />
-        <activity android:name="com.twitter.sdk.android.core.identity.OAuthActivity" />
+                  android:label="@string/app_name"
+                  tools:replace="android:theme" />
 
         <activity
             android:name=".MainActivity"

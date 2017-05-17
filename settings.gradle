@@ -1,1 +1,1 @@
-include ':sim-app'
+include ':app'
