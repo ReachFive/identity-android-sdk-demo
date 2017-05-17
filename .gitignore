@@ -18,3 +18,4 @@ local.properties
 
 # Mac OS X
 .DS_Store
+gradle.properties
