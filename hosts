@@ -1,0 +1,9 @@
+##
+# Host Database
+#
+# localhost is used to configure the loopback interface
+# when the system is booting.  Do not change this entry.
+##
+#127.0.0.1	localhost axuan25.local
+
+10.0.2.2   	local-sandbox.og4.me
