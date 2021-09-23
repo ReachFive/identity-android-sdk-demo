@@ -1,4 +1,4 @@
-package com.reach5.identity.sdk.demo
+package co.reachfive.identity.sdk.demo
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
-import com.reach5.identity.sdk.core.Provider
+import co.reachfive.identity.sdk.core.Provider
 
 class ProvidersAdapter(private val context: Context, private var providers: List<Provider>) :
     BaseAdapter() {

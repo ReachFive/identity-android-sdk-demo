@@ -1,4 +1,4 @@
-package com.reach5.identity.sdk.demo
+package co.reachfive.identity.sdk.demo
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,11 +9,11 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.reach5.identity.sdk.core.ReachFive
-import com.reach5.identity.sdk.core.models.ReachFiveError
-import com.reach5.identity.sdk.core.models.SdkConfig
-import com.reach5.identity.sdk.core.models.AuthToken
-import com.reach5.identity.sdk.core.models.responses.webAuthn.DeviceCredential
+import co.reachfive.identity.sdk.core.ReachFive
+import co.reachfive.identity.sdk.core.models.ReachFiveError
+import co.reachfive.identity.sdk.core.models.SdkConfig
+import co.reachfive.identity.sdk.core.models.AuthToken
+import co.reachfive.identity.sdk.core.models.responses.webAuthn.DeviceCredential
 import io.github.cdimascio.dotenv.dotenv
 import kotlinx.android.synthetic.main.webauthn_devices.*
 

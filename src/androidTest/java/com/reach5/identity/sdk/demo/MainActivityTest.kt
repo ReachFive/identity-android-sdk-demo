@@ -1,11 +1,11 @@
-package com.reach5.identity.sdk.demo
+package co.reachfive.identity.sdk.demo
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
-import com.reach5.identity.sdk.core.ReachFive
-import com.reach5.identity.sdk.core.models.*
-import com.reach5.identity.sdk.core.models.requests.ProfileSignupRequest
-import com.reach5.identity.sdk.core.models.requests.UpdatePasswordRequest
+import co.reachfive.identity.sdk.core.ReachFive
+import co.reachfive.identity.sdk.core.models.*
+import co.reachfive.identity.sdk.core.models.requests.ProfileSignupRequest
+import co.reachfive.identity.sdk.core.models.requests.UpdatePasswordRequest
 import io.github.cdimascio.dotenv.dotenv
 import kotlinx.coroutines.*
 import org.junit.Assert.*

@@ -1,4 +1,4 @@
-package com.reach5.identity.sdk.demo;
+package co.reachfive.identity.sdk.demo;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,15 +12,15 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.reach5.identity.sdk.core.JavaReachFive;
-import com.reach5.identity.sdk.core.Provider;
-import com.reach5.identity.sdk.core.models.AuthToken;
-import com.reach5.identity.sdk.core.models.SdkConfig;
-import com.reach5.identity.sdk.core.models.OpenIdUser;
-import com.reach5.identity.sdk.core.models.SdkConfig;
-import com.reach5.identity.sdk.core.models.requests.ProfileSignupRequest;
-import com.reach5.identity.sdk.google.GoogleProvider;
-import com.reach5.identity.sdk.webview.WebViewProvider;
+import co.reachfive.identity.sdk.core.JavaReachFive;
+import co.reachfive.identity.sdk.core.Provider;
+import co.reachfive.identity.sdk.core.models.AuthToken;
+import co.reachfive.identity.sdk.core.models.SdkConfig;
+import co.reachfive.identity.sdk.core.models.OpenIdUser;
+import co.reachfive.identity.sdk.core.models.SdkConfig;
+import co.reachfive.identity.sdk.core.models.requests.ProfileSignupRequest;
+import co.reachfive.identity.sdk.google.GoogleProvider;
+import co.reachfive.identity.sdk.webview.WebViewProvider;
 
 import java.util.Arrays;
 import java.util.HashSet;
