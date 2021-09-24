@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">SIM App</string>
-
-	<string name="hello_world">SIM SDK Test response!</string>
-    <string name="action_settings">Settings</string>
-</resources>

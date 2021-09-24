@@ -1,26 +1,131 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+apply plugin: "com.github.ben-manes.versions"
+apply plugin: "com.android.application"
+apply plugin: "kotlin-android"
+
+def ext = rootProject.ext
 
 buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.2'
+    ext {
+        sdkVersion = "7.0.0-SNAPSHOT"
 
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        kotlin_version = "1.5.31"
+        kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+        androidSettings = [
+                min_sdk_version: 19,
+                target_sdk_version: 29,
+                compile_sdk_version: 29,
+                version_code: 4
+        ]
+    }
+
+    repositories {
+        gradlePluginPortal()
+        google()
+    }
+
+    dependencies {
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.39.0"
+
+        classpath 'com.android.tools.build:gradle:7.0.2'
+        classpath "com.google.gms:google-services:4.3.10"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
     }
 }
 
-allprojects {
-    repositories {
-        jcenter()
-        maven {
-            url "https://repo.reach5.co/artifactory/droid-release"
-            credentials{
-                username reachfive_repo_user
-                password reachfive_repo_password
-            }
+apply from: rootProject.file("appversion.gradle")
+group = "co.reachfive.identity.sdk.demo"
+version = appversion
+
+android {
+    compileSdkVersion androidSettings.compile_sdk_version
+
+    defaultConfig {
+        applicationId "co.reachfive.identity.sdk.demo"
+        minSdkVersion androidSettings.min_sdk_version
+        targetSdkVersion androidSettings.target_sdk_version
+        versionCode androidSettings.version_code
+        versionName this.version
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("keystore.jks")
+            storePassword "reachfive"
+            keyAlias "reachfive"
+            keyPassword "reachfive"
+        }
+        debug {
+            storeFile file("debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
         }
     }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.release
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
+    }
+
+    testOptions {
+        unitTests.includeAndroidResources = true
+    }
+
+    tasks.withType(Test) {
+        maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+    }
+}
+
+repositories {
+    google()
+    mavenCentral()
+    maven {
+        url "https://s01.oss.sonatype.org/content/repositories/snapshots"
+    }
+}
+
+dependencies {
+    implementation "co.reachfive.identity:sdk-core:$sdkVersion"
+    implementation "co.reachfive.identity:sdk-facebook:$sdkVersion"
+    implementation "co.reachfive.identity:sdk-google:$sdkVersion"
+    implementation "co.reachfive.identity:sdk-webview:$sdkVersion"
+
+    implementation "androidx.appcompat:appcompat:1.3.1"
+    implementation "androidx.cardview:cardview:1.0.0"
+    implementation "io.github.cdimascio:java-dotenv:5.2.2"
+
+    implementation ext.kotlin_stdlib
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+
+    androidTestImplementation "androidx.test.ext:junit:1.1.3"
+    androidTestImplementation "androidx.test.ext:truth:1.4.0"
+
+    androidTestImplementation "androidx.test:core-ktx:1.4.0"
+    androidTestImplementation "androidx.test:runner:1.4.0"
+    androidTestImplementation "androidx.test:rules:1.4.0"
+    androidTestImplementation "androidx.test.ext:junit-ktx:1.1.3"
 }
