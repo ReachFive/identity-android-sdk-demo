@@ -17,7 +17,6 @@ import co.reachfive.identity.sdk.core.Provider;
 import co.reachfive.identity.sdk.core.models.AuthToken;
 import co.reachfive.identity.sdk.core.models.SdkConfig;
 import co.reachfive.identity.sdk.core.models.OpenIdUser;
-import co.reachfive.identity.sdk.core.models.SdkConfig;
 import co.reachfive.identity.sdk.core.models.requests.ProfileSignupRequest;
 import co.reachfive.identity.sdk.google.GoogleProvider;
 import co.reachfive.identity.sdk.webview.WebViewProvider;

@@ -14,8 +14,8 @@ import co.reachfive.identity.sdk.core.models.ReachFiveError
 import co.reachfive.identity.sdk.core.models.SdkConfig
 import co.reachfive.identity.sdk.core.models.AuthToken
 import co.reachfive.identity.sdk.core.models.responses.webAuthn.DeviceCredential
+import co.reachfive.identity.sdk.demo.databinding.WebauthnDevicesBinding
 import io.github.cdimascio.dotenv.dotenv
-import kotlinx.android.synthetic.main.webauthn_devices.*
 
 
 class AuthenticatedActivity : AppCompatActivity() {
@@ -35,6 +35,8 @@ class AuthenticatedActivity : AppCompatActivity() {
     private lateinit var deviceAdapter: DevicesAdapter
     private lateinit var devicesDisplayed: List<DeviceCredential>
 
+    private lateinit var devicesBinding: WebauthnDevicesBinding
+
     companion object {
         const val AUTH_TOKEN = "AUTH_TOKEN"
         const val SDK_CONFIG = "SDK_CONFIG"
@@ -44,6 +46,8 @@ class AuthenticatedActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authenticated)
+
+        devicesBinding = WebauthnDevicesBinding.inflate(layoutInflater)
 
         this.authToken = intent.getParcelableExtra(AUTH_TOKEN)
         this.devicesDisplayed = listOf()
@@ -67,12 +71,12 @@ class AuthenticatedActivity : AppCompatActivity() {
         val phoneNumberTextView = findViewById<View>(R.id.user_phone_number) as TextView
         phoneNumberTextView.text = this.authToken.user?.phoneNumber
 
-        newFriendlyName.setText(android.os.Build.MODEL)
-        addNewDevice.setOnClickListener {
+        devicesBinding.newFriendlyName.setText(android.os.Build.MODEL)
+        devicesBinding.addNewDevice.setOnClickListener {
             this.reach5.addNewWebAuthnDevice(
                 authToken = this.authToken,
                 origin = origin,
-                friendlyName = newFriendlyName.text.trim().toString(),
+                friendlyName = devicesBinding.newFriendlyName.text.trim().toString(),
                 registerRequestCode = REGISTER_REQUEST_CODE
             ) {
                 Log.d(TAG, "addNewWebAuthnDevice error=$it")
@@ -99,7 +103,7 @@ class AuthenticatedActivity : AppCompatActivity() {
                     )
                 }
             })
-        devices.adapter = deviceAdapter
+        devicesBinding.devices.adapter = deviceAdapter
 
         refreshDevicesDisplayed()
     }
@@ -148,7 +152,7 @@ class AuthenticatedActivity : AppCompatActivity() {
     }
 
     private fun showDevicesTitle() {
-        devicesTitle.visibility =
+        devicesBinding.devicesTitle.visibility =
             if (this.devicesDisplayed.isEmpty()) View.INVISIBLE else View.VISIBLE
     }
 

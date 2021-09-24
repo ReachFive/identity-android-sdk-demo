@@ -9,26 +9,29 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import co.reachfive.identity.sdk.core.ReachFive
 import co.reachfive.identity.sdk.core.RedirectionActivity.Companion.REDIRECTION_REQUEST_CODE
+import co.reachfive.identity.sdk.core.models.AuthToken
 import co.reachfive.identity.sdk.core.models.ReachFiveError
 import co.reachfive.identity.sdk.core.models.SdkConfig
 import co.reachfive.identity.sdk.core.models.requests.ProfileSignupRequest
 import co.reachfive.identity.sdk.core.models.requests.ProfileWebAuthnSignupRequest
 import co.reachfive.identity.sdk.core.models.requests.webAuthn.WebAuthnLoginRequest
-import co.reachfive.identity.sdk.core.models.AuthToken
 import co.reachfive.identity.sdk.demo.AuthenticatedActivity.Companion.AUTH_TOKEN
 import co.reachfive.identity.sdk.demo.AuthenticatedActivity.Companion.SDK_CONFIG
+import co.reachfive.identity.sdk.demo.databinding.ActivityMainBinding
+import co.reachfive.identity.sdk.demo.databinding.CallbackLoginBinding
+import co.reachfive.identity.sdk.demo.databinding.WebauthnLoginBinding
+import co.reachfive.identity.sdk.demo.databinding.WebauthnSignupBinding
 import co.reachfive.identity.sdk.facebook.FacebookProvider
 import co.reachfive.identity.sdk.google.GoogleProvider
 import co.reachfive.identity.sdk.webview.WebViewProvider
 import io.github.cdimascio.dotenv.dotenv
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.email
-import kotlinx.android.synthetic.main.activity_main.phoneNumber
-import kotlinx.android.synthetic.main.callback_login.*
-import kotlinx.android.synthetic.main.webauthn_login.*
-import kotlinx.android.synthetic.main.webauthn_signup.*
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var webAuthnLoginBinding: WebauthnLoginBinding
+    private lateinit var webAuthnSignupBinding: WebauthnSignupBinding
+    private lateinit var loginCallbackBinding: CallbackLoginBinding
+    private lateinit var mainActivityBinding: ActivityMainBinding
 
     private val TAG = "Reach5_MainActivity"
 
@@ -77,6 +80,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
+        webAuthnLoginBinding = WebauthnLoginBinding.inflate(layoutInflater)
+        webAuthnSignupBinding = WebauthnSignupBinding.inflate(layoutInflater)
+        loginCallbackBinding = CallbackLoginBinding.inflate(layoutInflater)
+        mainActivityBinding = ActivityMainBinding.inflate(layoutInflater)
+
         val providersCreators = listOf(
             GoogleProvider(),
             FacebookProvider(),
@@ -96,9 +104,9 @@ class MainActivity : AppCompatActivity() {
 
         providerAdapter = ProvidersAdapter(applicationContext, reach5.getProviders())
 
-        providers.adapter = providerAdapter
+        mainActivityBinding.providers.adapter = providerAdapter
 
-        providers.setOnItemClickListener { _, _, position, _ ->
+        mainActivityBinding.providers.setOnItemClickListener { _, _, position, _ ->
             val provider = reach5.getProviders()[position]
             this.reach5.loginWithProvider(
                 name = provider.name,
@@ -108,28 +116,35 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        passwordSignup.setOnClickListener {
+        val emailBinding = mainActivityBinding.email
+        val phoneNumberBinding = mainActivityBinding.phoneNumber
+        val passwordBinding = mainActivityBinding.password
+        val redirectUrlBinding = mainActivityBinding.redirectUrl
+
+        mainActivityBinding.passwordSignup.setOnClickListener {
             val signupRequest = when {
-                ((email.text.toString().isNotEmpty()) &&(phoneNumber.text.toString().isEmpty()) ) -> ProfileSignupRequest (
-                        email = email.text.toString(),
-                        password = password.text.toString()
+                ((emailBinding.text.toString().isNotEmpty()) && (phoneNumberBinding.text.toString()
+                    .isEmpty())) -> ProfileSignupRequest(
+                    email = emailBinding.text.toString(),
+                    password = passwordBinding.text.toString()
                 )
-                ((email.text.toString().isEmpty()) &&(phoneNumber.text.toString().isNotEmpty()) ) -> ProfileSignupRequest(
-                        phoneNumber = phoneNumber.text.toString(),
-                        password = password.text.toString()
+                ((emailBinding.text.toString().isEmpty()) && (phoneNumberBinding.text.toString()
+                    .isNotEmpty())) -> ProfileSignupRequest(
+                    phoneNumber = phoneNumberBinding.text.toString(),
+                    password = passwordBinding.text.toString()
                 )
 
                 else ->
                     ProfileSignupRequest(
-                            email = email.text.toString(),
-                            phoneNumber = phoneNumber.text.toString(),
-                            password = password.text.toString()
+                        email = emailBinding.text.toString(),
+                        phoneNumber = phoneNumberBinding.text.toString(),
+                        password = passwordBinding.text.toString()
                     )
             }
 
             this.reach5.signup(
                 profile = signupRequest,
-                redirectUrl = redirectUrl.text.toString().ifEmpty { null },
+                redirectUrl = redirectUrlBinding.text.toString().ifEmpty { null },
                 success = { handleLoginSuccess(it) },
                 failure = {
                     Log.d(TAG, "signup error=$it")
@@ -138,11 +153,11 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        passwordLogin.setOnClickListener {
+        mainActivityBinding.passwordLogin.setOnClickListener {
             this.reach5.loginWithPassword(
-                username = email.text.trim().toString()
-                    .ifEmpty { phoneNumber.text.trim().toString() },
-                password = password.text.trim().toString(),
+                username = emailBinding.text.trim().toString()
+                    .ifEmpty { phoneNumberBinding.text.trim().toString() },
+                password = passwordBinding.text.trim().toString(),
                 success = { handleLoginSuccess(it) },
                 failure = {
                     Log.d(TAG, "loginWithPassword error=$it")
@@ -151,13 +166,13 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        startPasswordless.setOnClickListener {
-            val redirectUri = redirectUriInput.text.toString()
+        mainActivityBinding.startPasswordless.setOnClickListener {
+            val redirectUri = mainActivityBinding.redirectUriInput.text.toString()
 
-            if (email.text.toString().isNotEmpty()) {
+            if (emailBinding.text.toString().isNotEmpty()) {
                 if (redirectUri != "") {
                     this.reach5.startPasswordless(
-                        email = email.text.toString(),
+                        email = emailBinding.text.toString(),
                         redirectUrl = redirectUri,
                         successWithNoContent = { showToast("Email sent - Check your email box") },
                         failure = {
@@ -167,7 +182,7 @@ class MainActivity : AppCompatActivity() {
                     )
                 } else {
                     this.reach5.startPasswordless(
-                        email = email.text.toString(),
+                        email = emailBinding.text.toString(),
                         successWithNoContent = { showToast("Email sent - Check your email box") },
                         failure = {
                             Log.d(TAG, "signup error=$it")
@@ -178,7 +193,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 if (redirectUri != "") {
                     this.reach5.startPasswordless(
-                        phoneNumber = phoneNumber.text.toString(),
+                        phoneNumber = phoneNumberBinding.text.toString(),
                         redirectUrl = redirectUri,
                         successWithNoContent = { showToast("Sms sent - Please enter the validation code below") },
                         failure = {
@@ -188,7 +203,7 @@ class MainActivity : AppCompatActivity() {
                     )
                 } else {
                     this.reach5.startPasswordless(
-                        phoneNumber = phoneNumber.text.toString(),
+                        phoneNumber = phoneNumberBinding.text.toString(),
                         successWithNoContent = { showToast("Sms sent - Please enter the validation code below") },
                         failure = {
                             Log.d(TAG, "signup error=$it")
@@ -199,10 +214,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        phoneNumberPasswordless.setOnClickListener {
+        mainActivityBinding.phoneNumberPasswordless.setOnClickListener {
             this.reach5.verifyPasswordless(
-                phoneNumber = phoneNumber.text.toString(),
-                verificationCode = verificationCode.text.toString(),
+                phoneNumber = phoneNumberBinding.text.toString(),
+                verificationCode = mainActivityBinding.verificationCode.text.toString(),
                 success = { handleLoginSuccess(it) },
                 failure = {
                     Log.d(TAG, "verifyPasswordless error=$it")
@@ -211,16 +226,16 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        signupWithWebAuthn.setOnClickListener {
+        webAuthnSignupBinding.signupWithWebAuthn.setOnClickListener {
             this.reach5
                 .signupWithWebAuthn(
                     profile = ProfileWebAuthnSignupRequest(
-                        email = signupWebAuthnEmail.text.toString(),
-                        givenName = signupWebAuthnGivenName.text.toString(),
-                        familyName = signupWebAuthnFamilyName.text.toString()
+                        email = webAuthnSignupBinding.signupWebAuthnEmail.text.toString(),
+                        givenName = webAuthnSignupBinding.signupWebAuthnGivenName.text.toString(),
+                        familyName = webAuthnSignupBinding.signupWebAuthnFamilyName.text.toString()
                     ),
                     origin = origin,
-                    friendlyName = signupWebAuthnNewFriendlyName.text.toString(),
+                    friendlyName = webAuthnSignupBinding.signupWebAuthnNewFriendlyName.text.toString(),
                     signupRequestCode = WEBAUTHN_SIGNUP_REQUEST_CODE,
                     successWithWebAuthnId = { this.webAuthnId = it },
                     failure = {
@@ -230,15 +245,15 @@ class MainActivity : AppCompatActivity() {
                 )
         }
 
-        loginWithWebAuthn.setOnClickListener {
-            val email = webAuthnEmail.text.toString()
+        webAuthnLoginBinding.loginWithWebAuthn.setOnClickListener {
+            val email = webAuthnLoginBinding.webAuthnEmail.text.toString()
             val webAuthnLoginRequest: WebAuthnLoginRequest =
                 if (email.isNotEmpty())
                     WebAuthnLoginRequest.EmailWebAuthnLoginRequest(origin, email, assignedScope)
                 else
                     WebAuthnLoginRequest.PhoneNumberWebAuthnLoginRequest(
                         origin,
-                        webAuthnPhoneNumber.text.toString(),
+                        webAuthnLoginBinding.webAuthnPhoneNumber.text.toString(),
                         assignedScope
                     )
 
@@ -253,9 +268,9 @@ class MainActivity : AppCompatActivity() {
                 )
         }
 
-        loginWithCallback.setOnClickListener {
+        loginCallbackBinding.loginWithCallback.setOnClickListener {
             reach5.loginCallback(
-                tkn = tkn.text.toString(),
+                tkn = loginCallbackBinding.tkn.text.toString(),
                 scope = assignedScope
             )
         }
@@ -273,6 +288,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d(TAG, "MainActivity.onActivityResult requestCode=$requestCode resultCode=$resultCode")
@@ -327,6 +343,7 @@ class MainActivity : AppCompatActivity() {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         Log.d(
             TAG,
             "MainActivity.onRequestPermissionsResult requestCode=$requestCode permissions=$permissions grantResults=$grantResults"

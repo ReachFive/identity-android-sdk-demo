@@ -2,13 +2,11 @@ apply plugin: "com.github.ben-manes.versions"
 apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
 
+def ext = rootProject.ext
+
 buildscript {
     ext {
-        reachfive = [
-                version : "1.0.0",
-                sdkVersion : "7.0.0",
-                group   : "co.reachfive.identity.sdk.demo",
-        ]
+        sdkVersion = "7.0.0-SNAPSHOT"
 
         kotlin_version = "1.5.31"
         kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -36,8 +34,9 @@ buildscript {
     }
 }
 
-group = reachfive.lib_group
-version = reachfive.lib_version
+apply from: rootProject.file("appversion.gradle")
+group = "co.reachfive.identity.sdk.demo"
+version = appversion
 
 android {
     compileSdkVersion androidSettings.compile_sdk_version
@@ -49,6 +48,10 @@ android {
         versionCode androidSettings.version_code
         versionName this.version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
     signingConfigs {
@@ -77,6 +80,10 @@ android {
         }
     }
 
+    lintOptions {
+        abortOnError false
+    }
+
     compileOptions {
         sourceCompatibility = "1.8"
         targetCompatibility = "1.8"
@@ -94,14 +101,16 @@ android {
 repositories {
     google()
     mavenCentral()
-    jcenter()
+    maven {
+        url "https://s01.oss.sonatype.org/content/repositories/snapshots"
+    }
 }
 
 dependencies {
-    implementation "co.reachfive.identity:sdk-core:${reachfive.sdkVersion}"
-    implementation "co.reachfive.identity:sdk-facebook:${reachfive.sdkVersion}"
-    implementation "co.reachfive.identity:sdk-google:${reachfive.sdkVersion}"
-    implementation "co.reachfive.identity:sdk-webview:${reachfive.sdkVersion}"
+    implementation "co.reachfive.identity:sdk-core:$sdkVersion"
+    implementation "co.reachfive.identity:sdk-facebook:$sdkVersion"
+    implementation "co.reachfive.identity:sdk-google:$sdkVersion"
+    implementation "co.reachfive.identity:sdk-webview:$sdkVersion"
 
     implementation "androidx.appcompat:appcompat:1.3.1"
     implementation "androidx.cardview:cardview:1.0.0"
