@@ -6,7 +6,7 @@ def ext = rootProject.ext
 
 buildscript {
     ext {
-        sdkVersion = "7.0.0-SNAPSHOT"
+        sdkVersion = "7.0.0"
 
         kotlin_version = "1.5.31"
         kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -14,7 +14,7 @@ buildscript {
         androidSettings = [
                 min_sdk_version: 19,
                 target_sdk_version: 29,
-                compile_sdk_version: 29,
+                compile_sdk_version: 31,
                 version_code: 4
         ]
     }
@@ -101,6 +101,7 @@ android {
 repositories {
     google()
     mavenCentral()
+    mavenLocal()
     maven {
         url "https://s01.oss.sonatype.org/content/repositories/snapshots"
     }

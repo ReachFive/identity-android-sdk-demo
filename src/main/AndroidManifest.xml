@@ -12,7 +12,8 @@
             android:theme="@style/AppTheme">
         <activity
                 android:name=".MainActivity"
-                android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+                android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,11 +24,13 @@
 
         <activity
                 android:name="co.reachfive.identity.sdk.demo.AuthenticatedActivity"
-                android:screenOrientation="portrait" />
+                android:screenOrientation="portrait"
+            android:exported="true"/>
 
         <activity
                 android:name="co.reachfive.identity.sdk.core.RedirectionActivity"
-                android:screenOrientation="portrait">
+                android:screenOrientation="portrait"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -44,11 +47,13 @@
 
         <activity
                 android:name="co.reachfive.identity.sdk.webview.ReachFiveLoginActivity"
-                android:screenOrientation="portrait" />
+                android:screenOrientation="portrait"
+            android:exported="true" />
 
         <activity
                 android:name=".JavaMainActivity"
-                android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="true" />
 
         <meta-data
                 android:name="com.facebook.sdk.ApplicationId"
@@ -57,7 +62,8 @@
         <activity
                 android:name="com.facebook.FacebookActivity"
                 android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-                android:label="@string/app_name" />
+                android:label="@string/app_name"
+            android:exported="true" />
 
         <uses-library
                 android:name="android.test.runner"

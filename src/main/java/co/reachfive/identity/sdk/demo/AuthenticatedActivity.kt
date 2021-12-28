@@ -49,10 +49,10 @@ class AuthenticatedActivity : AppCompatActivity() {
 
         devicesBinding = WebauthnDevicesBinding.inflate(layoutInflater)
 
-        this.authToken = intent.getParcelableExtra(AUTH_TOKEN)
+        this.authToken = intent.getParcelableExtra(AUTH_TOKEN)!!
         this.devicesDisplayed = listOf()
 
-        val sdkConfig = intent.getParcelableExtra<SdkConfig>(SDK_CONFIG)
+        val sdkConfig = intent.getParcelableExtra<SdkConfig>(SDK_CONFIG)!!
         this.reach5 = ReachFive(
             sdkConfig = sdkConfig,
             providersCreators = listOf(),
