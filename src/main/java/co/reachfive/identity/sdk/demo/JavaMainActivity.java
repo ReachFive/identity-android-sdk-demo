@@ -18,6 +18,7 @@ import co.reachfive.identity.sdk.core.models.AuthToken;
 import co.reachfive.identity.sdk.core.models.SdkConfig;
 import co.reachfive.identity.sdk.core.models.OpenIdUser;
 import co.reachfive.identity.sdk.core.models.requests.ProfileSignupRequest;
+import co.reachfive.identity.sdk.facebook.FacebookProvider;
 import co.reachfive.identity.sdk.google.GoogleProvider;
 import co.reachfive.identity.sdk.webview.WebViewProvider;
 
@@ -51,7 +52,7 @@ public class JavaMainActivity extends AppCompatActivity {
     reach5 = new JavaReachFive(
         this,
         sdkConfig,
-        Arrays.asList(new GoogleProvider(), new WebViewProvider())
+        Arrays.asList(new GoogleProvider(), new WebViewProvider(), new FacebookProvider())
     );
 
     reach5.initialize(providers ->
