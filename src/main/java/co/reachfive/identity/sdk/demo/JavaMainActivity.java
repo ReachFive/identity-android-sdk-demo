@@ -62,6 +62,12 @@ public class JavaMainActivity extends AppCompatActivity {
           showToast("ReachFive init " + error.getMessage());
         });
 
+    findViewById(R.id.weblogin).setOnClickListener(view -> {
+      Log.d("DEMO APP","That web login button was clicked");
+      Set<String> scope = new HashSet<>(Arrays.asList("openid", "email", "profile", "phone_number", "offline_access", "events", "full_write"));
+      reach5.loginWithWeb(scope,"state", "origin", "nonce");
+    });
+
     providerAdapter = new ProvidersAdapter(getApplicationContext(), reach5.getProviders());
 
     ListView providers = findViewById(R.id.providers);
@@ -125,6 +131,7 @@ public class JavaMainActivity extends AppCompatActivity {
   @Override
   protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
+    Log.d("DEMOAPPdata", data.toString());
     reach5.onActivityResult(requestCode, resultCode, data, this::handleLoginSuccess, it -> {
       Log.d(TAG, "onActivityResult error=" + it.getMessage());
       showToast("LoginProvider error=" + it.getMessage());

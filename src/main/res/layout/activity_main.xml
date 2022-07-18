@@ -88,6 +88,14 @@
                     android:padding="12dp">
 
                 <Button
+                    android:id="@+id/weblogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/login_web"
+                    tools:ignore="ButtonStyle" />
+
+                <Button
                         android:id="@+id/passwordLogin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
