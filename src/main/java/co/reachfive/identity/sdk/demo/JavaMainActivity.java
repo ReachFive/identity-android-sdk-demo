@@ -35,6 +35,10 @@ public class JavaMainActivity extends AppCompatActivity {
   private JavaReachFive reach5;
   private ProvidersAdapter providerAdapter;
 
+  final int WEBAUTHN_LOGIN_REQUEST_CODE = 2;
+  final int WEBAUTHN_SIGNUP_REQUEST_CODE = 3;
+  final int REDIRECTION_REQUEST_CODE = 52558;
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -131,11 +135,40 @@ public class JavaMainActivity extends AppCompatActivity {
   @Override
   protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    Log.d("DEMOAPPdata", data.toString());
-    reach5.onActivityResult(requestCode, resultCode, data, this::handleLoginSuccess, it -> {
-      Log.d(TAG, "onActivityResult error=" + it.getMessage());
-      showToast("LoginProvider error=" + it.getMessage());
-    });
+    switch (requestCode) {
+      case WEBAUTHN_LOGIN_REQUEST_CODE:
+        Log.d("DEMOAPP", "Result from Webauthn login request");
+        switch (resultCode) {
+          case RESULT_OK:
+            Log.d("DEMOAPP", "Result is OK");
+            break;
+          case RESULT_CANCELED:
+            Log.d("DEMOAPP", "Result is CANCELED");
+            break;
+          case RESULT_FIRST_USER:
+            Log.d("DEMOAPP", "Result is FIRST_USER ");
+            break;
+        }
+        break;
+      case WEBAUTHN_SIGNUP_REQUEST_CODE:
+        Log.d("DEMOAPP", "Result from Webauthn signup request");
+
+        break;
+      case REDIRECTION_REQUEST_CODE:
+        Log.d("DEMOAPP", "Result from Redirection request");
+        reach5.onActivityResult(requestCode, resultCode, data, this::handleLoginSuccess, it -> {
+          Log.d(TAG, "onActivityResult error=" + it.getMessage()); // FIXME cleanup
+          showToast("LoginProvider error=" + it.getMessage());
+        });
+        break;
+      default:
+        Log.d("DEMOAPP", "Result from other request " + requestCode);
+        Log.d("DEMOAPP", "Result is " + resultCode);
+        reach5.onActivityResult(requestCode, resultCode, data, this::handleLoginSuccess, it -> {
+        Log.d(TAG, "onActivityResult error=" + it.getMessage()); // FIXME cleanup
+        showToast("LoginProvider error=" + it.getMessage());
+      });
+    }
   }
 
   @Override
