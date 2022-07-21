@@ -117,6 +117,13 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+        mainActivityBinding.weblogin.setOnClickListener {
+            this.reach5.loginWithWeb(
+                    state = "state",
+                    nonce = "nonce",
+                    origin = "origin")
+        }
+
         val redirectUrlBinding = passwordAuthBinding.redirectUrl
         val emailPwdBinding = passwordAuthBinding.email
         val phoneNumberPwdBinding = passwordAuthBinding.phoneNumber
