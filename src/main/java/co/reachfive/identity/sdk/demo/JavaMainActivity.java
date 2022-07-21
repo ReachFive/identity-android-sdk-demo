@@ -67,7 +67,6 @@ public class JavaMainActivity extends AppCompatActivity {
         });
 
     findViewById(R.id.weblogin).setOnClickListener(view -> {
-      Log.d("DEMO APP","That web login button was clicked");
       Set<String> scope = new HashSet<>(Arrays.asList("openid", "email", "profile", "phone_number", "offline_access", "events", "full_write"));
       reach5.loginWithWeb(scope,"state", "origin", "nonce");
     });
@@ -136,36 +135,13 @@ public class JavaMainActivity extends AppCompatActivity {
   protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     switch (requestCode) {
-      case WEBAUTHN_LOGIN_REQUEST_CODE:
-        Log.d("DEMOAPP", "Result from Webauthn login request");
-        switch (resultCode) {
-          case RESULT_OK:
-            Log.d("DEMOAPP", "Result is OK");
-            break;
-          case RESULT_CANCELED:
-            Log.d("DEMOAPP", "Result is CANCELED");
-            break;
-          case RESULT_FIRST_USER:
-            Log.d("DEMOAPP", "Result is FIRST_USER ");
-            break;
-        }
-        break;
-      case WEBAUTHN_SIGNUP_REQUEST_CODE:
-        Log.d("DEMOAPP", "Result from Webauthn signup request");
-
-        break;
       case REDIRECTION_REQUEST_CODE:
-        Log.d("DEMOAPP", "Result from Redirection request");
-        reach5.onActivityResult(requestCode, resultCode, data, this::handleLoginSuccess, it -> {
-          Log.d(TAG, "onActivityResult error=" + it.getMessage()); // FIXME cleanup
-          showToast("LoginProvider error=" + it.getMessage());
+        reach5.onLoginCallbackResult(data, resultCode, this::handleLoginSuccess, it -> {
+          showToast("LoginCallback error=" + it.getMessage());
         });
         break;
       default:
-        Log.d("DEMOAPP", "Result from other request " + requestCode);
-        Log.d("DEMOAPP", "Result is " + resultCode);
         reach5.onActivityResult(requestCode, resultCode, data, this::handleLoginSuccess, it -> {
-        Log.d(TAG, "onActivityResult error=" + it.getMessage()); // FIXME cleanup
         showToast("LoginProvider error=" + it.getMessage());
       });
     }
