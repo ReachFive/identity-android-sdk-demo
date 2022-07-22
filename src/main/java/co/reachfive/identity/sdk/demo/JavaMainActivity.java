@@ -54,13 +54,13 @@ public class JavaMainActivity extends AppCompatActivity {
     Objects.requireNonNull(getSupportActionBar()).setTitle("Java Sdk Example");
 
     reach5 = new JavaReachFive(
-        this,
-        sdkConfig,
-        Arrays.asList(new GoogleProvider(), new WebViewProvider(), new FacebookProvider())
+            this,
+            sdkConfig,
+            Arrays.asList(new GoogleProvider(), new WebViewProvider(), new FacebookProvider())
     );
 
     reach5.initialize(providers ->
-            providerAdapter.refresh(providers)
+              providerAdapter.refresh(providers)
         , error -> {
           Log.d(TAG, "ReachFive init " + error.getMessage());
           showToast("ReachFive init " + error.getMessage());
@@ -79,7 +79,7 @@ public class JavaMainActivity extends AppCompatActivity {
     providers.setOnItemClickListener((parent, view, position, id) -> {
       Provider provider = reach5.getProviders().get(position);
       Set<String> scope = new HashSet<>(Arrays.asList("openid", "email", "profile", "phone_number", "offline_access", "events", "full_write"));
-      reach5.loginWithNativeProvider(provider.getName(), scope, "home", this);
+      reach5.loginWithProvider(provider.getName(), scope, "home", this);
     });
 
     EditText emailEditText = findViewById(R.id.email);
