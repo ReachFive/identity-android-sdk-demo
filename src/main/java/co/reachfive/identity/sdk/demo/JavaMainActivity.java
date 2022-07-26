@@ -141,7 +141,7 @@ public class JavaMainActivity extends AppCompatActivity {
         });
         break;
       default:
-        reach5.onActivityResult(requestCode, resultCode, data, this::handleLoginSuccess, it -> {
+        reach5.onLoginActivityResult(requestCode, resultCode, data, this::handleLoginSuccess, it -> {
         showToast("LoginProvider error=" + it.getMessage());
       });
     }
