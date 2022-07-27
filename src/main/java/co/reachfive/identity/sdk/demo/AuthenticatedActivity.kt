@@ -40,7 +40,6 @@ class AuthenticatedActivity : AppCompatActivity() {
     companion object {
         const val AUTH_TOKEN = "AUTH_TOKEN"
         const val SDK_CONFIG = "SDK_CONFIG"
-        const val REGISTER_REQUEST_CODE = 1
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

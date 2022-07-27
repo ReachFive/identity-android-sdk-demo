@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import co.reachfive.identity.sdk.core.ReachFive
-import co.reachfive.identity.sdk.core.RedirectionActivity.Companion.REDIRECTION_REQUEST_CODE
 import co.reachfive.identity.sdk.core.models.AuthToken
 import co.reachfive.identity.sdk.core.models.ReachFiveError
 import co.reachfive.identity.sdk.core.models.SdkConfig
@@ -67,13 +66,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var reach5: ReachFive
 
     private lateinit var providerAdapter: ProvidersAdapter
-
-    private lateinit var webAuthnId: String
-
-    companion object {
-        const val WEBAUTHN_LOGIN_REQUEST_CODE = 2
-        const val WEBAUTHN_SIGNUP_REQUEST_CODE = 3
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
