@@ -78,16 +78,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(mainActivityBinding.root)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        val providersCreators = listOf(
-                GoogleProvider(),
-                FacebookProvider(),
-                WebViewProvider()
-        )
+        val providersCreators = listOf(GoogleProvider(), FacebookProvider(), WebViewProvider())
 
         this.reach5 = ReachFive(
-                sdkConfig = sdkConfig,
-                providersCreators = providersCreators,
-                activity = this
+            sdkConfig = sdkConfig,
+            providersCreators = providersCreators,
+            activity = this
         ).initialize({ providers ->
             providerAdapter.refresh(providers)
         }, {
