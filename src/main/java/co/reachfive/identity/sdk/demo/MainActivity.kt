@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import co.reachfive.identity.sdk.core.LoginResultHandler
 import co.reachfive.identity.sdk.core.ReachFive
 import co.reachfive.identity.sdk.core.models.AuthToken
 import co.reachfive.identity.sdk.core.models.ReachFiveError
@@ -292,21 +293,13 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d(TAG, "MainActivity.onActivityResult requestCode=$requestCode resultCode=$resultCode")
 
-
-        reach5.onWebauthnLoginResult(requestCode, resultCode,
-                intent = data,
-                failure = {
-                    Log.d(TAG, "onLoginWithWebAuthnResult error=$it")
-                    showErrorToast(it)
-                })
-
-        reach5.onLoginActivityResult(requestCode, resultCode,
-                intent = data,
-                success = { handleLoginSuccess(it) },
-                failure = {
-                    Log.d(TAG, "onLoginWithCallbackResult error=$it")
-                    showErrorToast(it)
-                })
+        val handler = reach5.resolveResultHandler(resultCode, resultCode, data)
+        when (handler) {
+            is LoginResultHandler -> handler.handle({handleLoginSuccess(it)}, {
+                Log.d(TAG, "onLoginWithCallbackResult error=$it")
+                showErrorToast(it)
+            })
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -315,9 +308,8 @@ class MainActivity : AppCompatActivity() {
             grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.d(
-                TAG,
-                "MainActivity.onRequestPermissionsResult requestCode=$requestCode permissions=$permissions grantResults=$grantResults"
+        Log.d(TAG,
+            "MainActivity.onRequestPermissionsResult requestCode=$requestCode permissions=$permissions grantResults=$grantResults"
         )
         reach5.onRequestPermissionsResult(requestCode, permissions, grantResults, failure = {})
     }
