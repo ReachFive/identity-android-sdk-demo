@@ -437,7 +437,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
-                redirectUrl = null,
+            redirectUrl = null,
             { authToken ->
                 client.updateEmail(
                     authToken,
@@ -462,7 +462,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
-                redirectUrl = null,
+            redirectUrl = null,
             { authToken ->
                 client.updateEmail(
                     authToken,
@@ -516,7 +516,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
-                redirectUrl = null,
+            redirectUrl = null,
             { authToken ->
                 client.updatePhoneNumber(
                     authToken,
@@ -541,7 +541,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
-                redirectUrl = null,
+            redirectUrl = null,
             { authToken ->
                 client.updatePhoneNumber(
                     authToken,
@@ -595,7 +595,7 @@ class MainActivityTest {
         client.signup(
             theProfile,
             scope,
-                redirectUrl = null,
+            redirectUrl = null,
             { authToken ->
                 client
                     .updateProfile(
@@ -652,7 +652,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
-                redirectUrl = null,
+            redirectUrl = null,
             { authToken ->
                 client.updatePassword(
                     UpdatePasswordRequest.FreshAccessTokenParams(authToken, newPassword),
@@ -680,7 +680,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
-                redirectUrl = null,
+            redirectUrl = null,
             { authToken ->
                 client.updatePassword(
                     UpdatePasswordRequest.AccessTokenParams(
@@ -711,7 +711,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
-                redirectUrl = null,
+            redirectUrl = null,
             { authToken ->
                 client.updatePassword(
                     UpdatePasswordRequest.AccessTokenParams(
@@ -743,7 +743,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
-                redirectUrl = null,
+            redirectUrl = null,
             {
                 client.updatePassword(
                     UpdatePasswordRequest.EmailParams(
@@ -772,7 +772,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
-                redirectUrl = null,
+            redirectUrl = null,
             {
                 client.updatePassword(
                     UpdatePasswordRequest.SmsParams(
@@ -845,7 +845,10 @@ class MainActivityTest {
                     successWithNoContent = { fail("This test should have failed because neither the email or the phone number were provided.") },
                     failure = { error ->
                         assertEquals("invalid_grant", error.data?.error)
-                        assertEquals("The identifier must be a valid email or a valid phone number.", error.data?.errorDescription)
+                        assertEquals(
+                            "The identifier must be a valid email or a valid phone number.",
+                            error.data?.errorDescription
+                        )
                         passTest()
                     }
                 )
