@@ -27,8 +27,8 @@ buildscript {
     dependencies {
         classpath "com.github.ben-manes:gradle-versions-plugin:0.39.0"
 
-        classpath "com.android.tools.build:gradle:7.0.2"
-        classpath "com.google.gms:google-services:4.3.10"
+        classpath "com.android.tools.build:gradle:7.0.4"
+        classpath "com.google.gms:google-services:4.3.13"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
     }
@@ -113,7 +113,7 @@ dependencies {
     implementation "co.reachfive.identity:sdk-google:$sdkVersion"
     implementation "co.reachfive.identity:sdk-webview:$sdkVersion"
 
-    implementation "androidx.appcompat:appcompat:1.3.1"
+    implementation "androidx.appcompat:appcompat:1.4.2"
     implementation "androidx.cardview:cardview:1.0.0"
     implementation "io.github.cdimascio:java-dotenv:5.2.2"
 
