@@ -27,7 +27,6 @@ import co.reachfive.identity.sdk.facebook.FacebookProvider;
 import co.reachfive.identity.sdk.google.GoogleProvider;
 import co.reachfive.identity.sdk.webview.WebViewProvider;
 import io.github.cdimascio.dotenv.Dotenv;
-import kotlin.Unit;
 
 public class JavaMainActivity extends AppCompatActivity {
     private static String TAG = "Reach5_MainActivity";
@@ -54,7 +53,7 @@ public class JavaMainActivity extends AppCompatActivity {
                 Arrays.asList(new GoogleProvider(), new WebViewProvider(), new FacebookProvider())
         );
 
-        reach5.initialize( t -> {
+        reach5.initialize(t -> {
                     Log.d("JavaMainActivity", "Success initializing SDK");
                 }
                 , error -> {
