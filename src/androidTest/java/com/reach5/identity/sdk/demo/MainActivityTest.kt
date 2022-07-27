@@ -227,7 +227,7 @@ class MainActivityTest {
             scope = openId,
             success = { fail("This test should have failed because the password is too weak.") },
             failure = { error ->
-                assertEquals("Validation failed", error.data?.errorDescription)
+                assertEquals("Password requirements not met", error.data?.errorDescription)
                 assertEquals("Password too weak", error.data?.errorDetails?.get(0)?.message)
                 passTest()
             }
@@ -437,6 +437,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
+            redirectUrl = null,
             { authToken ->
                 client.updateEmail(
                     authToken,
@@ -461,6 +462,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
+            redirectUrl = null,
             { authToken ->
                 client.updateEmail(
                     authToken,
@@ -514,6 +516,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
+            redirectUrl = null,
             { authToken ->
                 client.updatePhoneNumber(
                     authToken,
@@ -538,6 +541,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
+            redirectUrl = null,
             { authToken ->
                 client.updatePhoneNumber(
                     authToken,
@@ -591,6 +595,7 @@ class MainActivityTest {
         client.signup(
             theProfile,
             scope,
+            redirectUrl = null,
             { authToken ->
                 client
                     .updateProfile(
@@ -647,6 +652,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
+            redirectUrl = null,
             { authToken ->
                 client.updatePassword(
                     UpdatePasswordRequest.FreshAccessTokenParams(authToken, newPassword),
@@ -674,6 +680,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
+            redirectUrl = null,
             { authToken ->
                 client.updatePassword(
                     UpdatePasswordRequest.AccessTokenParams(
@@ -704,6 +711,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
+            redirectUrl = null,
             { authToken ->
                 client.updatePassword(
                     UpdatePasswordRequest.AccessTokenParams(
@@ -715,7 +723,7 @@ class MainActivityTest {
                     failure = { error ->
                         assertEquals("invalid_request", error.data?.error)
                         assertEquals(
-                            "New password should be different from the old password",
+                            "password should be different from old password",
                             error.data?.errorDescription
                         )
                         passTest()
@@ -735,6 +743,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
+            redirectUrl = null,
             {
                 client.updatePassword(
                     UpdatePasswordRequest.EmailParams(
@@ -763,6 +772,7 @@ class MainActivityTest {
         client.signup(
             profile,
             scope,
+            redirectUrl = null,
             {
                 client.updatePassword(
                     UpdatePasswordRequest.SmsParams(
@@ -835,7 +845,10 @@ class MainActivityTest {
                     successWithNoContent = { fail("This test should have failed because neither the email or the phone number were provided.") },
                     failure = { error ->
                         assertEquals("invalid_grant", error.data?.error)
-                        assertEquals("Invalid credentials", error.data?.errorDescription)
+                        assertEquals(
+                            "The identifier must be a valid email or a valid phone number.",
+                            error.data?.errorDescription
+                        )
                         passTest()
                     }
                 )
