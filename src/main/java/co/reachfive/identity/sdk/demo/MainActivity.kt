@@ -273,17 +273,18 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        val authorizationCode: String? = intent?.data?.getQueryParameter("code")
-        if (authorizationCode != null) {
-            this.reach5.exchangeCodeForToken(
-                    authorizationCode,
-                    success = { handleLoginSuccess(it) },
-                    failure = {
-                        Log.d(TAG, "loginWithPassword error=$it")
-                        showErrorToast(it)
-                    }
-            )
-        }
+        // TOOD/cbu/nbrr
+//        val authorizationCode: String? = intent?.data?.getQueryParameter("code")
+//        if (authorizationCode != null) {
+//            this.reach5.exchangeCodeForToken(
+//                    authorizationCode,
+//                    success = { handleLoginSuccess(it) },
+//                    failure = {
+//                        Log.d(TAG, "loginWithPassword error=$it")
+//                        showErrorToast(it)
+//                    }
+//            )
+//        }
     }
 
     @Suppress("deprecation")
