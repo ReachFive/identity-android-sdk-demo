@@ -278,7 +278,7 @@ class MainActivity : AppCompatActivity() {
 //        })
 
         // Method B
-        val handler = reach5.resolveResultHandler(resultCode, resultCode, data)
+        val handler = reach5.resolveResultHandler(requestCode, resultCode, data)
         when (handler) {
             is LoginResultHandler -> handler.handle({handleLoginSuccess(it)}, {
                 Log.d(TAG, "onLoginWithCallbackResult error=$it")
