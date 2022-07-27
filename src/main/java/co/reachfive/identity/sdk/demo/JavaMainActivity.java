@@ -133,16 +133,11 @@ public class JavaMainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REDIRECTION_REQUEST_CODE:
-                reach5.onLoginCallbackResult(data, resultCode, this::handleLoginSuccess, it -> {
-                    showToast("LoginCallback error=" + it.getMessage());
-                });
-                break;
-            default:
-                reach5.onLoginActivityResult(requestCode, resultCode, data, this::handleLoginSuccess, it -> {
-                    showToast("LoginProvider error=" + it.getMessage());
-                });
+
+        if (reach5.isReachFiveLoginRequestCode(requestCode)) {
+            reach5.onLoginActivityResult(requestCode, resultCode, data, this::handleLoginSuccess, it -> {
+                showToast("LoginCallback error=" + it.getMessage());
+            });
         }
     }
 
