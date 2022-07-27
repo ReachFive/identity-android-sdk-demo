@@ -55,8 +55,16 @@ public class JavaMainActivity extends AppCompatActivity {
                 Arrays.asList(new GoogleProvider(), new WebViewProvider(), new FacebookProvider())
         );
 
-        reach5.initialize(null//providers ->
-                        //providerAdapter.refresh(providers)
+        reach5.initialize( t -> {
+                    reach5.loadProviders(
+                             providers -> {
+                                    providerAdapter.refresh(providers);
+                            },
+                            error -> {
+                                Log.d(TAG, "Loading providers failed" + error.getMessage());
+                            },
+                            this);
+                }
                 , error -> {
                     Log.d(TAG, "ReachFive init " + error.getMessage());
                     showToast("ReachFive init " + error.getMessage());

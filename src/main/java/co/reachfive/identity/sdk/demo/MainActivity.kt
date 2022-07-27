@@ -83,17 +83,19 @@ class MainActivity : AppCompatActivity() {
             sdkConfig = sdkConfig,
             providersCreators = providersCreators
         ).initialize({
-            providerAdapter.refresh(reach5.getProviders())
-            Log.d(TAG, "Providers:\n"+reach5.getProviders())
             Log.d(TAG, "ReachFive init success")
-        }
-        , {
+
+            reach5.loadProviders(
+                    success = { providers -> providerAdapter.refresh(providers) },
+                    failure = { Log.d(TAG, "Loading providers failed ${it.message}")},
+                    this
+            )
+        }, {
             Log.d(TAG, "ReachFive init ${it.message}")
             showToast("ReachFive init ${it.message}")
         })
 
         providerAdapter = ProvidersAdapter(applicationContext, reach5.getProviders())
-        Log.d(TAG, "Providers2:\n"+reach5.getProviders())
 
         mainActivityBinding.providers.adapter = providerAdapter
 
