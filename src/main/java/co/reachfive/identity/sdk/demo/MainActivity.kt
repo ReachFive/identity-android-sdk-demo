@@ -124,12 +124,14 @@ class MainActivity : AppCompatActivity() {
 
         passwordAuthBinding.passwordSignup.setOnClickListener {
             val signupRequest = when {
-                ((emailPwdBinding.text.toString().isNotEmpty()) && (phoneNumberPwdBinding.text.toString()
+                ((emailPwdBinding.text.toString()
+                    .isNotEmpty()) && (phoneNumberPwdBinding.text.toString()
                     .isEmpty())) -> ProfileSignupRequest(
                     email = emailPwdBinding.text.toString(),
                     password = passwordBinding.text.toString()
                 )
-                ((emailPwdBinding.text.toString().isEmpty()) && (phoneNumberPwdBinding.text.toString()
+                ((emailPwdBinding.text.toString()
+                    .isEmpty()) && (phoneNumberPwdBinding.text.toString()
                     .isNotEmpty())) -> ProfileSignupRequest(
                     phoneNumber = phoneNumberPwdBinding.text.toString(),
                     password = passwordBinding.text.toString()

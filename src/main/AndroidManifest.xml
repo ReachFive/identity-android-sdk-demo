@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        package="co.reachfive.identity.sdk.demo">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="co.reachfive.identity.sdk.demo">
 
     <application
-            android:allowBackup="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/app_name"
-            android:roundIcon="@mipmap/ic_launcher_round"
-            android:supportsRtl="true"
-            android:theme="@style/AppTheme">
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
         <activity
-                android:name=".MainActivity"
-                android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-                android:exported="true">
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,14 +23,14 @@
         </activity>
 
         <activity
-                android:name="co.reachfive.identity.sdk.demo.AuthenticatedActivity"
-                android:screenOrientation="portrait"
-            android:exported="true"/>
+            android:name="co.reachfive.identity.sdk.demo.AuthenticatedActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
 
         <activity
-                android:name="co.reachfive.identity.sdk.core.RedirectionActivity"
-                android:screenOrientation="portrait"
-            android:exported="true">
+            android:name="co.reachfive.identity.sdk.core.RedirectionActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -38,31 +38,31 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                        android:scheme="@string/reachfive_scheme"
-                        android:host="@string/reachfive_client_id"
-                        android:pathPrefix="@string/reachfive_path"
-                        tools:ignore="AppLinkUrlError" />
+                    android:host="@string/reachfive_client_id"
+                    android:pathPrefix="@string/reachfive_path"
+                    android:scheme="@string/reachfive_scheme"
+                    tools:ignore="AppLinkUrlError" />
             </intent-filter>
         </activity>
 
         <activity
-                android:name="co.reachfive.identity.sdk.webview.ReachFiveLoginActivity"
-                android:screenOrientation="portrait"
-            android:exported="true" />
+            android:name="co.reachfive.identity.sdk.webview.ReachFiveLoginActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
 
         <activity
-                android:name=".JavaMainActivity"
-                android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:exported="true" />
+            android:name=".JavaMainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <meta-data
-                android:name="com.facebook.sdk.ApplicationId"
-                android:value="@string/facebook_app_id" />
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
 
 
         <uses-library
-                android:name="android.test.runner"
-                android:required="false" />
+            android:name="android.test.runner"
+            android:required="false" />
 
     </application>
 
