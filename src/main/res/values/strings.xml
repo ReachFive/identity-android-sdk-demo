@@ -12,6 +12,7 @@
     <string name="given_name">Given name</string>
     <string name="java">Java</string>
     <string name="last_name">Last name</string>
+    <string name="login_web">Login with Web</string>
     <string name="login">Login</string>
     <string name="login_with_fido2">Login with FIDO2</string>
     <string name="login_with_callback">Login with callback</string>

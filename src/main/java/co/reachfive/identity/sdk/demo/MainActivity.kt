@@ -117,6 +117,13 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+        mainActivityBinding.weblogin.setOnClickListener {
+            this.reach5.loginWithWeb(
+                    state = "state",
+                    nonce = "nonce",
+                    origin = "origin")
+        }
+
         val redirectUrlBinding = passwordAuthBinding.redirectUrl
         val emailPwdBinding = passwordAuthBinding.email
         val phoneNumberPwdBinding = passwordAuthBinding.phoneNumber
@@ -124,14 +131,12 @@ class MainActivity : AppCompatActivity() {
 
         passwordAuthBinding.passwordSignup.setOnClickListener {
             val signupRequest = when {
-                ((emailPwdBinding.text.toString()
-                    .isNotEmpty()) && (phoneNumberPwdBinding.text.toString()
+                ((emailPwdBinding.text.toString().isNotEmpty()) && (phoneNumberPwdBinding.text.toString()
                     .isEmpty())) -> ProfileSignupRequest(
                     email = emailPwdBinding.text.toString(),
                     password = passwordBinding.text.toString()
                 )
-                ((emailPwdBinding.text.toString()
-                    .isEmpty()) && (phoneNumberPwdBinding.text.toString()
+                ((emailPwdBinding.text.toString().isEmpty()) && (phoneNumberPwdBinding.text.toString()
                     .isNotEmpty())) -> ProfileSignupRequest(
                     phoneNumber = phoneNumberPwdBinding.text.toString(),
                     password = passwordBinding.text.toString()

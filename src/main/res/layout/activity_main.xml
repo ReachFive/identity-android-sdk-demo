@@ -23,6 +23,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <Button
+                android:id="@+id/weblogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/login_web"
+                tools:ignore="ButtonStyle" />
+
             <include
                 android:id="@+id/password_auth"
                 layout="@layout/password_auth" />
@@ -30,6 +38,7 @@
             <include
                 android:id="@+id/passwordless_auth"
                 layout="@layout/passwordless_auth" />
+
 
             <include
                 android:id="@+id/webauthn_signup"
