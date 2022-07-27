@@ -286,7 +286,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressWarnings("deprecation")
+    @Suppress("deprecation")
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d(TAG, "MainActivity.onActivityResult requestCode=$requestCode resultCode=$resultCode")

@@ -106,6 +106,7 @@ class AuthenticatedActivity : AppCompatActivity() {
         refreshDevicesDisplayed()
     }
 
+    @Suppress("deprecation")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d(TAG, "onActivityResult - requestCode: $requestCode, resultCode: $resultCode")
