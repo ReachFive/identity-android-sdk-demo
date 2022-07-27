@@ -34,15 +34,15 @@ public class JavaMainActivity extends AppCompatActivity {
     private JavaReachFive reach5;
     private ProvidersAdapter providerAdapter;
 
-  final int WEBAUTHN_LOGIN_REQUEST_CODE = 2;
-  final int WEBAUTHN_SIGNUP_REQUEST_CODE = 3;
-  final int REDIRECTION_REQUEST_CODE = 52558;
+    final int WEBAUTHN_LOGIN_REQUEST_CODE = 2;
+    final int WEBAUTHN_SIGNUP_REQUEST_CODE = 3;
+    final int REDIRECTION_REQUEST_CODE = 52558;
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-    setSupportActionBar(findViewById(R.id.toolbar));
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        setSupportActionBar(findViewById(R.id.toolbar));
 
         SdkConfig sdkConfig = new SdkConfig(
                 Objects.requireNonNull(dotenv.get("DOMAIN")),
@@ -52,11 +52,11 @@ public class JavaMainActivity extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).setTitle("Java Sdk Example");
 
-    reach5 = new JavaReachFive(
-        this,
-        sdkConfig,
-        Arrays.asList(new GoogleProvider(), new WebViewProvider(), new FacebookProvider())
-    );
+        reach5 = new JavaReachFive(
+                this,
+                sdkConfig,
+                Arrays.asList(new GoogleProvider(), new WebViewProvider(), new FacebookProvider())
+        );
 
         reach5.initialize(providers ->
                         providerAdapter.refresh(providers)
@@ -65,12 +65,12 @@ public class JavaMainActivity extends AppCompatActivity {
                     showToast("ReachFive init " + error.getMessage());
                 });
 
-    findViewById(R.id.weblogin).setOnClickListener(view -> {
-      Set<String> scope = new HashSet<>(Arrays.asList("openid", "email", "profile", "phone_number", "offline_access", "events", "full_write"));
-      reach5.loginWithWeb(scope,"state", "origin", "nonce");
-    });
+        findViewById(R.id.weblogin).setOnClickListener(view -> {
+            Set<String> scope = new HashSet<>(Arrays.asList("openid", "email", "profile", "phone_number", "offline_access", "events", "full_write"));
+            reach5.loginWithWeb(scope, "state", "origin", "nonce");
+        });
 
-    providerAdapter = new ProvidersAdapter(getApplicationContext(), reach5.getProviders());
+        providerAdapter = new ProvidersAdapter(getApplicationContext(), reach5.getProviders());
 
         ListView providers = findViewById(R.id.providers);
         providers.setAdapter(providerAdapter);
@@ -78,7 +78,7 @@ public class JavaMainActivity extends AppCompatActivity {
         providers.setOnItemClickListener((parent, view, position, id) -> {
             Provider provider = reach5.getProviders().get(position);
             Set<String> scope = new HashSet<>(Arrays.asList("openid", "email", "profile", "phone_number", "offline_access", "events", "full_write"));
-            reach5.loginWithNativeProvider(provider.getName(), scope, "home", this);
+            reach5.loginWithProvider(provider.getName(), scope, "home", this);
         });
 
         EditText emailEditText = findViewById(R.id.email);
@@ -130,21 +130,21 @@ public class JavaMainActivity extends AppCompatActivity {
         showToast("Login success " + authToken.getAccessToken());
     }
 
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    switch (requestCode) {
-      case REDIRECTION_REQUEST_CODE:
-        reach5.onLoginCallbackResult(data, resultCode, this::handleLoginSuccess, it -> {
-          showToast("LoginCallback error=" + it.getMessage());
-        });
-        break;
-      default:
-        reach5.onActivityResult(requestCode, resultCode, data, this::handleLoginSuccess, it -> {
-        showToast("LoginProvider error=" + it.getMessage());
-      });
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REDIRECTION_REQUEST_CODE:
+                reach5.onLoginCallbackResult(data, resultCode, this::handleLoginSuccess, it -> {
+                    showToast("LoginCallback error=" + it.getMessage());
+                });
+                break;
+            default:
+                reach5.onActivityResult(requestCode, resultCode, data, this::handleLoginSuccess, it -> {
+                    showToast("LoginProvider error=" + it.getMessage());
+                });
+        }
     }
-  }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

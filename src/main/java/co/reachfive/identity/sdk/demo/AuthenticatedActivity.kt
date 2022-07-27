@@ -92,7 +92,7 @@ class AuthenticatedActivity : AppCompatActivity() {
                     reach5.removeWebAuthnDevice(
                         authToken = authToken,
                         deviceId = device.id,
-                        successWithNoContent = {
+                        success = {
                             showToast("The FIDO2 device '${device.friendlyName}' is removed")
                             refreshDevicesDisplayed()
                         },
@@ -173,9 +173,9 @@ class AuthenticatedActivity : AppCompatActivity() {
 
     private fun handleWebAuthnRegisterResponse(intent: Intent) {
         reach5.onAddNewWebAuthnDeviceResult(
-            authToken = this.authToken,
+            authToken,
             intent = intent,
-            successWithNoContent = {
+            success = {
                 showToast("New FIDO2 device registered")
                 refreshDevicesDisplayed()
             },
