@@ -54,8 +54,7 @@ class AuthenticatedActivity : AppCompatActivity() {
         val sdkConfig = intent.getParcelableExtra<SdkConfig>(SDK_CONFIG)!!
         this.reach5 = ReachFive(
             sdkConfig = sdkConfig,
-            providersCreators = listOf(),
-            activity = this
+            providersCreators = listOf()
         )
 
         val givenNameTextView = findViewById<View>(R.id.user_given_name) as TextView
@@ -76,10 +75,12 @@ class AuthenticatedActivity : AppCompatActivity() {
                 authToken = this.authToken,
                 origin = origin,
                 friendlyName = devicesBinding.newFriendlyName.text.trim().toString(),
-            ) {
+                failure =  {
                 Log.d(TAG, "addNewWebAuthnDevice error=$it")
                 showToast(it.data?.errorUserMsg ?: it.message)
-            }
+            },
+                activity = this)
+
         }
 
         deviceAdapter =
