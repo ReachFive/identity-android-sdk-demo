@@ -160,6 +160,21 @@ class AuthenticatedActivity : AppCompatActivity() {
         )
     }
 
+//    private fun handleWebAuthnRegisterResponse(intent: Intent) {
+//        reach5.onAddNewWebAuthnDeviceResult(
+//            authToken,
+//            intent = intent,
+//            success = {
+//                showToast("New FIDO2 device registered")
+//                refreshDevicesDisplayed()
+//            },
+//            failure = {
+//                Log.d(TAG, "onAddNewWebAuthnDeviceResult error=$it")
+//                showErrorToast(it)
+//            }
+//        )
+//    }
+
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
