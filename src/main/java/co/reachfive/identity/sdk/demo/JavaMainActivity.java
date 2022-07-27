@@ -34,10 +34,6 @@ public class JavaMainActivity extends AppCompatActivity {
     private JavaReachFive reach5;
     private ProvidersAdapter providerAdapter;
 
-    final int WEBAUTHN_LOGIN_REQUEST_CODE = 2;
-    final int WEBAUTHN_SIGNUP_REQUEST_CODE = 3;
-    final int REDIRECTION_REQUEST_CODE = 52558;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

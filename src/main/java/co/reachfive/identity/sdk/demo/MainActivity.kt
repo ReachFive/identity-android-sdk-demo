@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var webAuthnSignupBinding: WebauthnSignupBinding
     private lateinit var passwordAuthBinding: PasswordAuthBinding
     private lateinit var passwordlessAuthBinding: PasswordlessAuthBinding
-    private lateinit var loginCallbackBinding: CallbackLoginBinding
     private lateinit var mainActivityBinding: ActivityMainBinding
 
     private val TAG = "Reach5_MainActivity"
@@ -75,7 +74,6 @@ class MainActivity : AppCompatActivity() {
         passwordlessAuthBinding = mainActivityBinding.passwordlessAuth
         webAuthnLoginBinding = mainActivityBinding.webauthnLogin
         webAuthnSignupBinding = mainActivityBinding.webauthnSignup
-        loginCallbackBinding = mainActivityBinding.callbackLogin
         setContentView(mainActivityBinding.root)
         setSupportActionBar(findViewById(R.id.toolbar))
 
@@ -266,26 +264,6 @@ class MainActivity : AppCompatActivity() {
                             }
                     )
         }
-
-        loginCallbackBinding.loginWithCallback.setOnClickListener {
-            reach5.loginCallback(
-                    tkn = loginCallbackBinding.tkn.text.toString(),
-                    scope = assignedScope
-            )
-        }
-
-        // TOOD/cbu/nbrr
-//        val authorizationCode: String? = intent?.data?.getQueryParameter("code")
-//        if (authorizationCode != null) {
-//            this.reach5.exchangeCodeForToken(
-//                    authorizationCode,
-//                    success = { handleLoginSuccess(it) },
-//                    failure = {
-//                        Log.d(TAG, "loginWithPassword error=$it")
-//                        showErrorToast(it)
-//                    }
-//            )
-//        }
     }
 
     @Suppress("deprecation")
