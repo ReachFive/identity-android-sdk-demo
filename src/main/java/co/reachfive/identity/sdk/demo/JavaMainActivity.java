@@ -49,21 +49,30 @@ public class JavaMainActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle("Java Sdk Example");
 
         reach5 = new JavaReachFive(
-                this,
                 sdkConfig,
                 Arrays.asList(new GoogleProvider(), new WebViewProvider(), new FacebookProvider())
         );
 
-        reach5.initialize(providers ->
-                        providerAdapter.refresh(providers)
+        reach5.initialize(t -> {
+                    Log.d("JavaMainActivity", "Success initializing SDK");
+                }
                 , error -> {
                     Log.d(TAG, "ReachFive init " + error.getMessage());
                     showToast("ReachFive init " + error.getMessage());
                 });
 
+        reach5.loadProviders(
+                providers -> {
+                    providerAdapter.refresh(providers);
+                },
+                error -> {
+                    Log.d(TAG, "Loading providers failed" + error.getMessage());
+                },
+                this);
+
         findViewById(R.id.weblogin).setOnClickListener(view -> {
             Set<String> scope = new HashSet<>(Arrays.asList("openid", "email", "profile", "phone_number", "offline_access", "events", "full_write"));
-            reach5.loginWithWeb(scope, "state", "origin", "nonce");
+            reach5.loginWithWeb(scope, "state", "origin", "nonce", this);
         });
 
         providerAdapter = new ProvidersAdapter(getApplicationContext(), reach5.getProviders());
@@ -133,7 +142,7 @@ public class JavaMainActivity extends AppCompatActivity {
         if (reach5.isReachFiveLoginRequestCode(requestCode)) {
             reach5.onLoginActivityResult(requestCode, resultCode, data, this::handleLoginSuccess, it -> {
                 showToast("LoginCallback error=" + it.getMessage());
-            });
+            }, this);
         }
     }
 

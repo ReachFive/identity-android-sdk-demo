@@ -14,6 +14,7 @@ import co.reachfive.identity.sdk.core.models.AuthToken
 import co.reachfive.identity.sdk.core.models.ReachFiveError
 import co.reachfive.identity.sdk.core.models.SdkConfig
 import co.reachfive.identity.sdk.core.models.responses.webAuthn.DeviceCredential
+import co.reachfive.identity.sdk.demo.databinding.ActivityAuthenticatedBinding
 import co.reachfive.identity.sdk.demo.databinding.WebauthnDevicesBinding
 import io.github.cdimascio.dotenv.dotenv
 
@@ -32,6 +33,8 @@ class AuthenticatedActivity : AppCompatActivity() {
     private lateinit var reach5: ReachFive
     private lateinit var authToken: AuthToken
 
+    private lateinit var authenticatedActivityBinding: ActivityAuthenticatedBinding
+
     private lateinit var deviceAdapter: DevicesAdapter
     private lateinit var devicesDisplayed: List<DeviceCredential>
 
@@ -44,9 +47,11 @@ class AuthenticatedActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_authenticated)
+        authenticatedActivityBinding = ActivityAuthenticatedBinding.inflate(layoutInflater)
+        devicesBinding = authenticatedActivityBinding.webauthnDevices
 
-        devicesBinding = WebauthnDevicesBinding.inflate(layoutInflater)
+        setContentView(authenticatedActivityBinding.root)
+
 
         this.authToken = intent.getParcelableExtra(AUTH_TOKEN)!!
         this.devicesDisplayed = listOf()
@@ -54,8 +59,7 @@ class AuthenticatedActivity : AppCompatActivity() {
         val sdkConfig = intent.getParcelableExtra<SdkConfig>(SDK_CONFIG)!!
         this.reach5 = ReachFive(
             sdkConfig = sdkConfig,
-            providersCreators = listOf(),
-            activity = this
+            providersCreators = listOf()
         )
 
         val givenNameTextView = findViewById<View>(R.id.user_given_name) as TextView
@@ -76,10 +80,12 @@ class AuthenticatedActivity : AppCompatActivity() {
                 authToken = this.authToken,
                 origin = origin,
                 friendlyName = devicesBinding.newFriendlyName.text.trim().toString(),
-            ) {
+                failure =  {
                 Log.d(TAG, "addNewWebAuthnDevice error=$it")
                 showToast(it.data?.errorUserMsg ?: it.message)
-            }
+            },
+                activity = this)
+
         }
 
         deviceAdapter =

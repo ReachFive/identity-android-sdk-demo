@@ -81,14 +81,19 @@ class MainActivity : AppCompatActivity() {
 
         this.reach5 = ReachFive(
             sdkConfig = sdkConfig,
-            providersCreators = providersCreators,
-            activity = this
-        ).initialize({ providers ->
-            providerAdapter.refresh(providers)
+            providersCreators = providersCreators
+        ).initialize({
+            Log.d(TAG, "ReachFive init success")
         }, {
             Log.d(TAG, "ReachFive init ${it.message}")
             showToast("ReachFive init ${it.message}")
         })
+
+        reach5.loadProviders(
+            success = { providers -> providerAdapter.refresh(providers) },
+            failure = { Log.d(TAG, "Loading providers failed ${it.message}")},
+            this
+        )
 
         providerAdapter = ProvidersAdapter(applicationContext, reach5.getProviders())
 
@@ -108,7 +113,8 @@ class MainActivity : AppCompatActivity() {
             this.reach5.loginWithWeb(
                     state = "state",
                     nonce = "nonce",
-                    origin = "origin")
+                    origin = "origin",
+                    activity = this)
         }
 
         val redirectUrlBinding = passwordAuthBinding.redirectUrl
@@ -177,7 +183,8 @@ class MainActivity : AppCompatActivity() {
                             failure = {
                                 Log.d(TAG, "signup error=$it")
                                 showErrorToast(it)
-                            }
+                            },
+                            activity = this
                     )
                 } else {
                     this.reach5.startPasswordless(
@@ -186,7 +193,8 @@ class MainActivity : AppCompatActivity() {
                             failure = {
                                 Log.d(TAG, "signup error=$it")
                                 showErrorToast(it)
-                            }
+                            },
+                            activity = this
                     )
                 }
             } else {
@@ -198,7 +206,8 @@ class MainActivity : AppCompatActivity() {
                             failure = {
                                 Log.d(TAG, "signup error=$it")
                                 showErrorToast(it)
-                            }
+                            },
+                            activity = this
                     )
                 } else {
                     this.reach5.startPasswordless(
@@ -207,7 +216,8 @@ class MainActivity : AppCompatActivity() {
                             failure = {
                                 Log.d(TAG, "signup error=$it")
                                 showErrorToast(it)
-                            }
+                            },
+                            activity = this
                     )
                 }
             }
@@ -221,7 +231,8 @@ class MainActivity : AppCompatActivity() {
                     failure = {
                         Log.d(TAG, "verifyPasswordless error=$it")
                         showErrorToast(it)
-                    }
+                    },
+                    activity = this
             )
         }
 
@@ -239,7 +250,8 @@ class MainActivity : AppCompatActivity() {
                             failure = {
                                 Log.d(TAG, "signupWithWebAuthn error=$it")
                                 showErrorToast(it)
-                            }
+                            },
+                            activity = this
                     )
         }
 
@@ -261,7 +273,8 @@ class MainActivity : AppCompatActivity() {
                             failure = {
                                 Log.d(TAG, "loginWithWebAuthn error=$it")
                                 showErrorToast(it)
-                            }
+                            },
+                            activity = this
                     )
         }
     }
@@ -283,7 +296,7 @@ class MainActivity : AppCompatActivity() {
             is LoginResultHandler -> handler.handle({handleLoginSuccess(it)}, {
                 Log.d(TAG, "onLoginWithCallbackResult error=$it")
                 showErrorToast(it)
-            })
+            }, activity = this)
         }
     }
 
@@ -296,7 +309,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG,
             "MainActivity.onRequestPermissionsResult requestCode=$requestCode permissions=$permissions grantResults=$grantResults"
         )
-        reach5.onRequestPermissionsResult(requestCode, permissions, grantResults, failure = {})
+        reach5.onRequestPermissionsResult(requestCode, permissions, grantResults, failure = {}, activity = this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
