@@ -61,14 +61,14 @@ public class JavaMainActivity extends AppCompatActivity {
                     showToast("ReachFive init " + error.getMessage());
                 });
 
-        reach5.loadProviders(
+        reach5.loadSocialProviders(
+                this,
                 providers -> {
                     providerAdapter.refresh(providers);
                 },
                 error -> {
                     Log.d(TAG, "Loading providers failed" + error.getMessage());
-                },
-                this);
+                });
 
         findViewById(R.id.weblogin).setOnClickListener(view -> {
             Set<String> scope = new HashSet<>(Arrays.asList("openid", "email", "profile", "phone_number", "offline_access", "events", "full_write"));

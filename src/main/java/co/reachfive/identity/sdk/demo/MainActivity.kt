@@ -89,10 +89,10 @@ class MainActivity : AppCompatActivity() {
             showToast("ReachFive init ${it.message}")
         })
 
-        reach5.loadProviders(
+        reach5.loadSocialProviders(
+            this,
             success = { providers -> providerAdapter.refresh(providers) },
-            failure = { Log.d(TAG, "Loading providers failed ${it.message}")},
-            this
+            failure = { Log.d(TAG, "Loading providers failed ${it.message}")}
         )
 
         providerAdapter = ProvidersAdapter(applicationContext, reach5.getProviders())
