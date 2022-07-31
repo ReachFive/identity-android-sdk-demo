@@ -27,7 +27,7 @@ buildscript {
     dependencies {
         classpath "com.github.ben-manes:gradle-versions-plugin:0.39.0"
 
-        classpath "com.android.tools.build:gradle:7.0.2"
+        classpath 'com.android.tools.build:gradle:7.2.1'
         classpath "com.google.gms:google-services:4.3.10"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
@@ -80,9 +80,6 @@ android {
         }
     }
 
-    lintOptions {
-        abortOnError false
-    }
 
     compileOptions {
         sourceCompatibility = "1.8"
@@ -91,6 +88,9 @@ android {
 
     testOptions {
         unitTests.includeAndroidResources = true
+    }
+    lint {
+        abortOnError false
     }
 
     tasks.withType(Test) {
