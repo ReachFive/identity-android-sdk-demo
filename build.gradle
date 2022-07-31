@@ -8,7 +8,7 @@ buildscript {
     ext {
         sdkVersion = "8.0.0"
 
-        kotlin_version = "1.5.31"
+        kotlin_version = "1.6.10"
         kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
         androidSettings = [
