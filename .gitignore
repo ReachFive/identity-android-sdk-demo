@@ -1,3 +1,6 @@
+# env
+src/main/assets/*
+
 # generated files
 build
 
