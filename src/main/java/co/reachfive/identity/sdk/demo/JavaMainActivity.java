@@ -153,22 +153,14 @@ public class JavaMainActivity extends AppCompatActivity {
         }
     }
 
-//    private void handleWebLogoutSuccess(Unit unit) {
-//        Log.i("JavaMainActivity", "Successful logout.");
-//        Objects.requireNonNull(getSupportActionBar()).setTitle("");
-//        showToast("Web logout success");
-//    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_logout:
-                // TODO/cbu
-//                reach5.logout(success -> showToast("Logout success"), failure -> {
-//                    Log.d(TAG, "logout error=" + failure.getMessage());
-//                    showToast("Logout Error " + failure.getMessage());
-//                });
-                reach5.logout(true, this);
+                reach5.logout(success -> showToast("Logout success"), failure -> {
+                    Log.d(TAG, "logout error=" + failure.getMessage());
+                    showToast("Logout Error " + failure.getMessage());
+                });
                 return true;
             case R.id.menu_java:
                 finish();

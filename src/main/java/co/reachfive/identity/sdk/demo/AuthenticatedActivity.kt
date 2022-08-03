@@ -145,7 +145,8 @@ class AuthenticatedActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.menu_logout -> {
                 Log.d("MainActivity", "Logging out...")
-                reach5.logout(true, this)
+                reach5.logout({}, {})
+                finish()
                 true
             }
             else -> {
