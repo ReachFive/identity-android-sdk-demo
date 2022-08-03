@@ -39,14 +39,14 @@ class MainActivity : AppCompatActivity() {
         filename = "env"
     }
     private val domain =
-            dotenv["DOMAIN"]
-                    ?: throw IllegalArgumentException("The ReachFive domain is undefined! Check your `env` file.")
+        dotenv["DOMAIN"]
+            ?: throw IllegalArgumentException("The ReachFive domain is undefined! Check your `env` file.")
     private val clientId =
-            dotenv["CLIENT_ID"]
-                    ?: throw IllegalArgumentException("The ReachFive client ID is undefined! Check your `env` file.")
+        dotenv["CLIENT_ID"]
+            ?: throw IllegalArgumentException("The ReachFive client ID is undefined! Check your `env` file.")
     private val scheme =
-            dotenv["SCHEME"]
-                    ?: throw IllegalArgumentException("The ReachFive redirect URI is undefined! Check your `env` file.")
+        dotenv["SCHEME"]
+            ?: throw IllegalArgumentException("The ReachFive redirect URI is undefined! Check your `env` file.")
 
     // This variable is only mandatory for the FIDO2 login flow
     private val origin = dotenv["ORIGIN"] ?: ""
@@ -54,13 +54,13 @@ class MainActivity : AppCompatActivity() {
     private val sdkConfig = SdkConfig(domain, clientId, scheme)
 
     private val assignedScope = setOf(
-            "openid",
-            "email",
-            "profile",
-            "phone_number",
-            "offline_access",
-            "events",
-            "full_write"
+        "openid",
+        "email",
+        "profile",
+        "phone_number",
+        "offline_access",
+        "events",
+        "full_write"
     )
 
     private lateinit var reach5: ReachFive
@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         reach5.loadSocialProviders(
             this,
             success = { providers -> providerAdapter.refresh(providers) },
-            failure = { Log.d(TAG, "Loading providers failed ${it.message}")}
+            failure = { Log.d(TAG, "Loading providers failed ${it.message}") }
         )
 
         providerAdapter = ProvidersAdapter(applicationContext, reach5.getProviders())
@@ -102,19 +102,20 @@ class MainActivity : AppCompatActivity() {
         mainActivityBinding.providers.setOnItemClickListener { _, _, position, _ ->
             val provider = reach5.getProviders()[position]
             this.reach5.loginWithProvider(
-                    name = provider.name,
-                    origin = "home",
-                    scope = assignedScope,
-                    activity = this
+                name = provider.name,
+                origin = "home",
+                scope = assignedScope,
+                activity = this
             )
         }
 
         mainActivityBinding.weblogin.setOnClickListener {
             this.reach5.loginWithWeb(
-                    state = "state",
-                    nonce = "nonce",
-                    origin = "origin",
-                    activity = this)
+                state = "state",
+                nonce = "nonce",
+                origin = "origin",
+                activity = this
+            )
         }
 
         val redirectUrlBinding = passwordAuthBinding.redirectUrl
@@ -124,46 +125,48 @@ class MainActivity : AppCompatActivity() {
 
         passwordAuthBinding.passwordSignup.setOnClickListener {
             val signupRequest = when {
-                ((emailPwdBinding.text.toString().isNotEmpty()) && (phoneNumberPwdBinding.text.toString()
-                        .isEmpty())) -> ProfileSignupRequest(
-                        email = emailPwdBinding.text.toString(),
-                        password = passwordBinding.text.toString()
+                ((emailPwdBinding.text.toString()
+                    .isNotEmpty()) && (phoneNumberPwdBinding.text.toString()
+                    .isEmpty())) -> ProfileSignupRequest(
+                    email = emailPwdBinding.text.toString(),
+                    password = passwordBinding.text.toString()
                 )
-                ((emailPwdBinding.text.toString().isEmpty()) && (phoneNumberPwdBinding.text.toString()
-                        .isNotEmpty())) -> ProfileSignupRequest(
-                        phoneNumber = phoneNumberPwdBinding.text.toString(),
-                        password = passwordBinding.text.toString()
+                ((emailPwdBinding.text.toString()
+                    .isEmpty()) && (phoneNumberPwdBinding.text.toString()
+                    .isNotEmpty())) -> ProfileSignupRequest(
+                    phoneNumber = phoneNumberPwdBinding.text.toString(),
+                    password = passwordBinding.text.toString()
                 )
 
                 else ->
                     ProfileSignupRequest(
-                            email = emailPwdBinding.text.toString(),
-                            phoneNumber = phoneNumberPwdBinding.text.toString(),
-                            password = passwordBinding.text.toString()
+                        email = emailPwdBinding.text.toString(),
+                        phoneNumber = phoneNumberPwdBinding.text.toString(),
+                        password = passwordBinding.text.toString()
                     )
             }
 
             this.reach5.signup(
-                    profile = signupRequest,
-                    redirectUrl = redirectUrlBinding.text.toString().ifEmpty { null },
-                    success = { handleLoginSuccess(it) },
-                    failure = {
-                        Log.d(TAG, "signup error=$it")
-                        showErrorToast(it)
-                    }
+                profile = signupRequest,
+                redirectUrl = redirectUrlBinding.text.toString().ifEmpty { null },
+                success = { handleLoginSuccess(it) },
+                failure = {
+                    Log.d(TAG, "signup error=$it")
+                    showErrorToast(it)
+                }
             )
         }
 
         passwordAuthBinding.passwordLogin.setOnClickListener {
             this.reach5.loginWithPassword(
-                    username = emailPwdBinding.text.trim().toString()
-                            .ifEmpty { phoneNumberPwdBinding.text.trim().toString() },
-                    password = passwordBinding.text.trim().toString(),
-                    success = { handleLoginSuccess(it) },
-                    failure = {
-                        Log.d(TAG, "loginWithPassword error=$it")
-                        showErrorToast(it)
-                    }
+                username = emailPwdBinding.text.trim().toString()
+                    .ifEmpty { phoneNumberPwdBinding.text.trim().toString() },
+                password = passwordBinding.text.trim().toString(),
+                success = { handleLoginSuccess(it) },
+                failure = {
+                    Log.d(TAG, "loginWithPassword error=$it")
+                    showErrorToast(it)
+                }
             )
         }
 
@@ -177,47 +180,47 @@ class MainActivity : AppCompatActivity() {
             if (emailPwdlBinding.text.toString().isNotEmpty()) {
                 if (redirectUri != "") {
                     this.reach5.startPasswordless(
-                            email = emailPwdlBinding.text.toString(),
-                            redirectUrl = redirectUri,
-                            successWithNoContent = { showToast("Email sent - Check your email box") },
-                            failure = {
-                                Log.d(TAG, "signup error=$it")
-                                showErrorToast(it)
-                            },
-                            activity = this
+                        email = emailPwdlBinding.text.toString(),
+                        redirectUrl = redirectUri,
+                        successWithNoContent = { showToast("Email sent - Check your email box") },
+                        failure = {
+                            Log.d(TAG, "signup error=$it")
+                            showErrorToast(it)
+                        },
+                        activity = this
                     )
                 } else {
                     this.reach5.startPasswordless(
-                            email = emailPwdlBinding.text.toString(),
-                            successWithNoContent = { showToast("Email sent - Check your email box") },
-                            failure = {
-                                Log.d(TAG, "signup error=$it")
-                                showErrorToast(it)
-                            },
-                            activity = this
+                        email = emailPwdlBinding.text.toString(),
+                        successWithNoContent = { showToast("Email sent - Check your email box") },
+                        failure = {
+                            Log.d(TAG, "signup error=$it")
+                            showErrorToast(it)
+                        },
+                        activity = this
                     )
                 }
             } else {
                 if (redirectUri != "") {
                     this.reach5.startPasswordless(
-                            phoneNumber = phoneNumberPwdlBinding.text.toString(),
-                            redirectUrl = redirectUri,
-                            successWithNoContent = { showToast("Sms sent - Please enter the validation code below") },
-                            failure = {
-                                Log.d(TAG, "signup error=$it")
-                                showErrorToast(it)
-                            },
-                            activity = this
+                        phoneNumber = phoneNumberPwdlBinding.text.toString(),
+                        redirectUrl = redirectUri,
+                        successWithNoContent = { showToast("Sms sent - Please enter the validation code below") },
+                        failure = {
+                            Log.d(TAG, "signup error=$it")
+                            showErrorToast(it)
+                        },
+                        activity = this
                     )
                 } else {
                     this.reach5.startPasswordless(
-                            phoneNumber = phoneNumberPwdlBinding.text.toString(),
-                            successWithNoContent = { showToast("Sms sent - Please enter the validation code below") },
-                            failure = {
-                                Log.d(TAG, "signup error=$it")
-                                showErrorToast(it)
-                            },
-                            activity = this
+                        phoneNumber = phoneNumberPwdlBinding.text.toString(),
+                        successWithNoContent = { showToast("Sms sent - Please enter the validation code below") },
+                        failure = {
+                            Log.d(TAG, "signup error=$it")
+                            showErrorToast(it)
+                        },
+                        activity = this
                     )
                 }
             }
@@ -225,61 +228,60 @@ class MainActivity : AppCompatActivity() {
 
         passwordlessAuthBinding.phoneNumberPasswordless.setOnClickListener {
             this.reach5.verifyPasswordless(
-                    phoneNumber = phoneNumberPwdlBinding.text.toString(),
-                    verificationCode = passwordlessAuthBinding.verificationCode.text.toString(),
-                    success = { handleLoginSuccess(it) },
-                    failure = {
-                        Log.d(TAG, "verifyPasswordless error=$it")
-                        showErrorToast(it)
-                    },
-                    activity = this
+                phoneNumber = phoneNumberPwdlBinding.text.toString(),
+                verificationCode = passwordlessAuthBinding.verificationCode.text.toString(),
+                success = { handleLoginSuccess(it) },
+                failure = {
+                    Log.d(TAG, "verifyPasswordless error=$it")
+                    showErrorToast(it)
+                },
+                activity = this
             )
         }
 
         webAuthnSignupBinding.signupWithWebAuthn.setOnClickListener {
             this.reach5
-                    .signupWithWebAuthn(
-                            profile = ProfileWebAuthnSignupRequest(
-                                    email = webAuthnSignupBinding.signupWebAuthnEmail.text.toString(),
-                                    givenName = webAuthnSignupBinding.signupWebAuthnGivenName.text.toString(),
-                                    familyName = webAuthnSignupBinding.signupWebAuthnFamilyName.text.toString()
-                            ),
-                            origin = origin,
-                            friendlyName = webAuthnSignupBinding.signupWebAuthnNewFriendlyName.text.toString(),
-                            success = {},
-                            failure = {
-                                Log.d(TAG, "signupWithWebAuthn error=$it")
-                                showErrorToast(it)
-                            },
-                            activity = this
-                    )
+                .signupWithWebAuthn(
+                    profile = ProfileWebAuthnSignupRequest(
+                        email = webAuthnSignupBinding.signupWebAuthnEmail.text.toString(),
+                        givenName = webAuthnSignupBinding.signupWebAuthnGivenName.text.toString(),
+                        familyName = webAuthnSignupBinding.signupWebAuthnFamilyName.text.toString()
+                    ),
+                    origin = origin,
+                    friendlyName = webAuthnSignupBinding.signupWebAuthnNewFriendlyName.text.toString(),
+                    success = {},
+                    failure = {
+                        Log.d(TAG, "signupWithWebAuthn error=$it")
+                        showErrorToast(it)
+                    },
+                    activity = this
+                )
         }
 
         webAuthnLoginBinding.loginWithWebAuthn.setOnClickListener {
             val email = webAuthnLoginBinding.webAuthnEmail.text.toString()
             val webAuthnLoginRequest: WebAuthnLoginRequest =
-                    if (email.isNotEmpty())
-                        WebAuthnLoginRequest.EmailWebAuthnLoginRequest(origin, email, assignedScope)
-                    else
-                        WebAuthnLoginRequest.PhoneNumberWebAuthnLoginRequest(
-                                origin,
-                                webAuthnLoginBinding.webAuthnPhoneNumber.text.toString(),
-                                assignedScope
-                        )
+                if (email.isNotEmpty())
+                    WebAuthnLoginRequest.EmailWebAuthnLoginRequest(origin, email, assignedScope)
+                else
+                    WebAuthnLoginRequest.PhoneNumberWebAuthnLoginRequest(
+                        origin,
+                        webAuthnLoginBinding.webAuthnPhoneNumber.text.toString(),
+                        assignedScope
+                    )
 
             this.reach5
-                    .loginWithWebAuthn(
-                            loginRequest = webAuthnLoginRequest,
-                            failure = {
-                                Log.d(TAG, "loginWithWebAuthn error=$it")
-                                showErrorToast(it)
-                            },
-                            activity = this
-                    )
+                .loginWithWebAuthn(
+                    loginRequest = webAuthnLoginRequest,
+                    failure = {
+                        Log.d(TAG, "loginWithWebAuthn error=$it")
+                        showErrorToast(it)
+                    },
+                    activity = this
+                )
         }
     }
 
-    @Suppress("deprecation")
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d(TAG, "MainActivity.onActivityResult requestCode=$requestCode resultCode=$resultCode")
@@ -293,23 +295,32 @@ class MainActivity : AppCompatActivity() {
         // Method B
         val handler = reach5.resolveResultHandler(requestCode, resultCode, data)
         when (handler) {
-            is LoginResultHandler -> handler.handle({handleLoginSuccess(it)}, {
+            is LoginResultHandler -> handler.handle({ handleLoginSuccess(it) }, {
                 Log.d(TAG, "onLoginWithCallbackResult error=$it")
                 showErrorToast(it)
             }, activity = this)
+            // TODO/cbu
+            else -> {}
         }
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<String>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.d(TAG,
+        Log.d(
+            TAG,
             "MainActivity.onRequestPermissionsResult requestCode=$requestCode permissions=$permissions grantResults=$grantResults"
         )
-        reach5.onRequestPermissionsResult(requestCode, permissions, grantResults, failure = {}, activity = this)
+        reach5.onRequestPermissionsResult(
+            requestCode,
+            permissions,
+            grantResults,
+            failure = {},
+            activity = this
+        )
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -355,9 +366,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun showErrorToast(error: ReachFiveError) {
         showToast(
-                error.data?.errorUserMsg ?: (error.data?.errorDetails?.get(0)?.message
-                        ?: (error.data?.errorDescription
-                                ?: error.message))
+            error.data?.errorUserMsg ?: (error.data?.errorDetails?.get(0)?.message
+                ?: (error.data?.errorDescription
+                    ?: error.message))
         )
     }
 }

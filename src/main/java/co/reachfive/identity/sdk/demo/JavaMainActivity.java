@@ -140,20 +140,35 @@ public class JavaMainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (reach5.isReachFiveLoginRequestCode(requestCode)) {
-            reach5.onLoginActivityResult(requestCode, resultCode, data, this::handleLoginSuccess, it -> {
-                showToast("LoginCallback error=" + it.getMessage());
-            }, this);
+            reach5.onLoginActivityResult(
+                    requestCode,
+                    resultCode,
+                    data,
+                    this::handleLoginSuccess,
+                    it -> {
+                        showToast("LoginCallback error=" + it.getMessage());
+                    },
+                    this
+            );
         }
     }
+
+//    private void handleWebLogoutSuccess(Unit unit) {
+//        Log.i("JavaMainActivity", "Successful logout.");
+//        Objects.requireNonNull(getSupportActionBar()).setTitle("");
+//        showToast("Web logout success");
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_logout:
-                reach5.logout(success -> showToast("Logout success"), failure -> {
-                    Log.d(TAG, "logout error=" + failure.getMessage());
-                    showToast("Logout Error " + failure.getMessage());
-                });
+                // TODO/cbu
+//                reach5.logout(success -> showToast("Logout success"), failure -> {
+//                    Log.d(TAG, "logout error=" + failure.getMessage());
+//                    showToast("Logout Error " + failure.getMessage());
+//                });
+                reach5.logout(true, this);
                 return true;
             case R.id.menu_java:
                 finish();

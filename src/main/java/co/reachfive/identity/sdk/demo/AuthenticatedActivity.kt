@@ -10,6 +10,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import co.reachfive.identity.sdk.core.ReachFive
+import co.reachfive.identity.sdk.core.WebAuthnDeviceAddResult
+import co.reachfive.identity.sdk.core.WebLogoutHandler
 import co.reachfive.identity.sdk.core.models.AuthToken
 import co.reachfive.identity.sdk.core.models.ReachFiveError
 import co.reachfive.identity.sdk.core.models.SdkConfig
@@ -80,11 +82,12 @@ class AuthenticatedActivity : AppCompatActivity() {
                 authToken = this.authToken,
                 origin = origin,
                 friendlyName = devicesBinding.newFriendlyName.text.trim().toString(),
-                failure =  {
-                Log.d(TAG, "addNewWebAuthnDevice error=$it")
-                showToast(it.data?.errorUserMsg ?: it.message)
-            },
-                activity = this)
+                failure = {
+                    Log.d(TAG, "addNewWebAuthnDevice error=$it")
+                    showToast(it.data?.errorUserMsg ?: it.message)
+                },
+                activity = this
+            )
 
         }
 
@@ -112,26 +115,37 @@ class AuthenticatedActivity : AppCompatActivity() {
         refreshDevicesDisplayed()
     }
 
-    @Suppress("deprecation")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d(TAG, "onActivityResult - requestCode: $requestCode, resultCode: $resultCode")
 
-        reach5.onWebauthnDeviceAddResult(requestCode, data,
-            success = {
-                showToast("New FIDO2 device registered")
-                refreshDevicesDisplayed()
-            },
-            failure = {
-                Log.d(TAG, "onAddNewWebAuthnDeviceResult error=$it")
-                showErrorToast(it)
-            })
+        val handler = reach5.resolveResultHandler(requestCode, resultCode, data)
+
+        if (handler is WebLogoutHandler)
+            handler.handle {
+                Log.d("AuthenticatedActivity", "Logout success")
+                showToast("Successful logout!")
+                finish()
+            }
+        else if (handler is WebAuthnDeviceAddResult) {
+            handler.handle(
+                success = {
+                    showToast("New FIDO2 device registered")
+                    refreshDevicesDisplayed()
+                },
+                failure = {
+                    Log.d(TAG, "onAddNewWebAuthnDeviceResult error=$it")
+                    showErrorToast(it)
+                }
+            )
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_logout -> {
-                finish()
+                Log.d("MainActivity", "Logging out...")
+                reach5.logout(true, this)
                 true
             }
             else -> {
@@ -153,16 +167,16 @@ class AuthenticatedActivity : AppCompatActivity() {
 
     private fun refreshDevicesDisplayed() {
         reach5.listWebAuthnDevices(
-                authToken,
-                success = {
-                    this.devicesDisplayed = it
-                    this.deviceAdapter.refresh(this.devicesDisplayed)
-                    showDevicesTitle()
-                },
-                failure = {
-                    Log.d(TAG, "listWebAuthnDevices error=$it")
-                    showErrorToast(it)
-                }
+            authToken,
+            success = {
+                this.devicesDisplayed = it
+                this.deviceAdapter.refresh(this.devicesDisplayed)
+                showDevicesTitle()
+            },
+            failure = {
+                Log.d(TAG, "listWebAuthnDevices error=$it")
+                showErrorToast(it)
+            }
         )
     }
 
