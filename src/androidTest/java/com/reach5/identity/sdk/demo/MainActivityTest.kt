@@ -656,7 +656,7 @@ class MainActivityTest {
             { authToken ->
                 client.updatePassword(
                     UpdatePasswordRequest.FreshAccessTokenParams(authToken, newPassword),
-                    successWithNoContent = {
+                    success = {
                         client.loginWithPassword(
                             profile.email!!,
                             newPassword,
@@ -688,7 +688,7 @@ class MainActivityTest {
                         profile.password,
                         newPassword
                     ),
-                    successWithNoContent = {
+                    success = {
                         client.loginWithPassword(
                             profile.email!!,
                             newPassword,
@@ -719,7 +719,7 @@ class MainActivityTest {
                         profile.password,
                         profile.password
                     ),
-                    successWithNoContent = { fail("This test should have failed because the password has not changed.") },
+                    success = { fail("This test should have failed because the password has not changed.") },
                     failure = { error ->
                         assertEquals("invalid_request", error.data?.error)
                         assertEquals(
@@ -751,7 +751,7 @@ class MainActivityTest {
                         incorrectVerificationCode,
                         "NEW-PASSWORD"
                     ),
-                    successWithNoContent = { fail("This test should have failed because the verification code is incorrect.") },
+                    success = { fail("This test should have failed because the verification code is incorrect.") },
                     failure = { error ->
                         assertEquals("invalid_grant", error.data?.error)
                         assertEquals("Invalid verification code", error.data?.errorDescription)
@@ -780,7 +780,7 @@ class MainActivityTest {
                         incorrectVerificationCode,
                         "NEW-PASSWORD"
                     ),
-                    successWithNoContent = { fail("This test should have failed because the verification code is incorrect.") },
+                    success = { fail("This test should have failed because the verification code is incorrect.") },
                     failure = { error ->
                         assertEquals("invalid_grant", error.data?.error)
                         assertEquals("Invalid verification code", error.data?.errorDescription)
@@ -803,7 +803,7 @@ class MainActivityTest {
             success = {
                 client.requestPasswordReset(
                     email = profile.email!!,
-                    successWithNoContent = { passTest() },
+                    success = { passTest() },
                     failure = { failWithReachFiveError(it) }
                 )
             },
@@ -822,7 +822,7 @@ class MainActivityTest {
             success = {
                 client.requestPasswordReset(
                     phoneNumber = profile.phoneNumber!!,
-                    successWithNoContent = { passTest() },
+                    success = { passTest() },
                     failure = { failWithReachFiveError(it) }
                 )
             },
@@ -842,7 +842,7 @@ class MainActivityTest {
                 client.requestPasswordReset(
                     email = null,
                     phoneNumber = null,
-                    successWithNoContent = { fail("This test should have failed because neither the email or the phone number were provided.") },
+                    success = { fail("This test should have failed because neither the email or the phone number were provided.") },
                     failure = { error ->
                         assertEquals("invalid_grant", error.data?.error)
                         assertEquals(
@@ -866,7 +866,7 @@ class MainActivityTest {
             openId,
             success = {
                 client.logout(
-                    successWithNoContent = { passTest() },
+                    success = { passTest() },
                     failure = { failWithReachFiveError(it) }
                 )
             },
@@ -921,7 +921,6 @@ class MainActivityTest {
                         }
                     ) {
                         ReachFive(
-                            activity = activityRule.activity,
                             sdkConfig = sdkConfig,
                             providersCreators = listOf()
                         ).also { client ->

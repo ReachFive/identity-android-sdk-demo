@@ -34,10 +34,6 @@ public class JavaMainActivity extends AppCompatActivity {
     private JavaReachFive reach5;
     private ProvidersAdapter providerAdapter;
 
-    final int WEBAUTHN_LOGIN_REQUEST_CODE = 2;
-    final int WEBAUTHN_SIGNUP_REQUEST_CODE = 3;
-    final int REDIRECTION_REQUEST_CODE = 52558;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,21 +49,30 @@ public class JavaMainActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle("Java Sdk Example");
 
         reach5 = new JavaReachFive(
-                this,
                 sdkConfig,
                 Arrays.asList(new GoogleProvider(), new WebViewProvider(), new FacebookProvider())
         );
 
-        reach5.initialize(providers ->
-                        providerAdapter.refresh(providers)
+        reach5.initialize(t -> {
+                    Log.d("JavaMainActivity", "Success initializing SDK");
+                }
                 , error -> {
                     Log.d(TAG, "ReachFive init " + error.getMessage());
                     showToast("ReachFive init " + error.getMessage());
                 });
 
+        reach5.loadSocialProviders(
+                this,
+                providers -> {
+                    providerAdapter.refresh(providers);
+                },
+                error -> {
+                    Log.d(TAG, "Loading providers failed" + error.getMessage());
+                });
+
         findViewById(R.id.weblogin).setOnClickListener(view -> {
             Set<String> scope = new HashSet<>(Arrays.asList("openid", "email", "profile", "phone_number", "offline_access", "events", "full_write"));
-            reach5.loginWithWeb(scope, "state", "origin", "nonce");
+            reach5.loginWithWeb(scope, "state", "origin", "nonce", this);
         });
 
         providerAdapter = new ProvidersAdapter(getApplicationContext(), reach5.getProviders());
@@ -105,8 +110,10 @@ public class JavaMainActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.passwordLogin).setOnClickListener(view -> {
-            String username = (!emailEditText.toString().isEmpty())
-                    ? emailEditText.getText().toString() : phoneNumberEditText.getText().toString();
+            String email = (!emailEditText.toString().trim().isEmpty()) ? emailEditText.toString().trim() : null;
+            String phone = (!phoneNumberEditText.getText().toString().trim().isEmpty()) ? phoneNumberEditText.getText().toString().trim() : null;
+            String username = (email != null) ? email : (phone != null) ? phone : "";
+
             reach5.loginWithPassword(
                     username,
                     passwordEditText.getText().toString(),
@@ -133,16 +140,18 @@ public class JavaMainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REDIRECTION_REQUEST_CODE:
-                reach5.onLoginCallbackResult(data, resultCode, this::handleLoginSuccess, it -> {
-                    showToast("LoginCallback error=" + it.getMessage());
-                });
-                break;
-            default:
-                reach5.onActivityResult(requestCode, resultCode, data, this::handleLoginSuccess, it -> {
-                    showToast("LoginProvider error=" + it.getMessage());
-                });
+
+        if (reach5.isReachFiveLoginRequestCode(requestCode)) {
+            reach5.onLoginActivityResult(
+                    requestCode,
+                    resultCode,
+                    data,
+                    this::handleLoginSuccess,
+                    it -> {
+                        showToast("LoginCallback error=" + it.getMessage());
+                    },
+                    this
+            );
         }
     }
 
