@@ -37,5 +37,8 @@
         android:padding="10dip" />
 
 
-    <include layout="@layout/webauthn_devices" />
+    <include
+        android:id="@+id/webauthn_devices"
+        layout="@layout/webauthn_devices"
+        />
 </LinearLayout>
