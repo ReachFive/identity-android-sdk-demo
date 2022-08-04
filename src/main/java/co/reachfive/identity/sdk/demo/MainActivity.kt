@@ -120,31 +120,32 @@ class MainActivity : AppCompatActivity() {
 
         val redirectUrlBinding = passwordAuthBinding.redirectUrl
         val emailPwdBinding = passwordAuthBinding.email
+        fun emailPwd() = emailPwdBinding.text.toString().let {
+            if (it.isBlank())
+                null
+            else
+                it
+        }
+
         val phoneNumberPwdBinding = passwordAuthBinding.phoneNumber
+        fun phoneNumberPwd() = phoneNumberPwdBinding.text.toString().let {
+            if (it.isBlank())
+                null
+            else
+                it
+        }
+
         val passwordBinding = passwordAuthBinding.password
+        fun passwordValue() = passwordBinding.text.toString().trim()
 
         passwordAuthBinding.passwordSignup.setOnClickListener {
-            val signupRequest = when {
-                ((emailPwdBinding.text.toString()
-                    .isNotEmpty()) && (phoneNumberPwdBinding.text.toString()
-                    .isEmpty())) -> ProfileSignupRequest(
-                    email = emailPwdBinding.text.toString(),
-                    password = passwordBinding.text.toString()
-                )
-                ((emailPwdBinding.text.toString()
-                    .isEmpty()) && (phoneNumberPwdBinding.text.toString()
-                    .isNotEmpty())) -> ProfileSignupRequest(
-                    phoneNumber = phoneNumberPwdBinding.text.toString(),
-                    password = passwordBinding.text.toString()
-                )
+            val signupRequest = ProfileSignupRequest(
+                email = emailPwd(),
+                phoneNumber = phoneNumberPwd(),
+                password = passwordValue()
+            )
 
-                else ->
-                    ProfileSignupRequest(
-                        email = emailPwdBinding.text.toString(),
-                        phoneNumber = phoneNumberPwdBinding.text.toString(),
-                        password = passwordBinding.text.toString()
-                    )
-            }
+            Log.d("Signup", "Password: '${passwordValue()}'")
 
             this.reach5.signup(
                 profile = signupRequest,
@@ -159,9 +160,9 @@ class MainActivity : AppCompatActivity() {
 
         passwordAuthBinding.passwordLogin.setOnClickListener {
             this.reach5.loginWithPassword(
-                username = emailPwdBinding.text.trim().toString()
-                    .ifEmpty { phoneNumberPwdBinding.text.trim().toString() },
-                password = passwordBinding.text.trim().toString(),
+                email = emailPwd(),
+                phoneNumber = phoneNumberPwd(),
+                password = passwordValue(),
                 success = { handleLoginSuccess(it) },
                 failure = {
                     Log.d(TAG, "loginWithPassword error=$it")
