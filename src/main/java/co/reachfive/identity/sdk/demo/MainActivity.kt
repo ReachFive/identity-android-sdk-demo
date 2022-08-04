@@ -160,8 +160,7 @@ class MainActivity : AppCompatActivity() {
 
         passwordAuthBinding.passwordLogin.setOnClickListener {
             this.reach5.loginWithPassword(
-                email = emailPwd(),
-                phoneNumber = phoneNumberPwd(),
+                username = emailPwd() ?: phoneNumberPwd() ?: "",
                 password = passwordValue(),
                 success = { handleLoginSuccess(it) },
                 failure = {
@@ -183,7 +182,7 @@ class MainActivity : AppCompatActivity() {
                     this.reach5.startPasswordless(
                         email = emailPwdlBinding.text.toString(),
                         redirectUrl = redirectUri,
-                        successWithNoContent = { showToast("Email sent - Check your email box") },
+                        success = { showToast("Email sent - Check your email box") },
                         failure = {
                             Log.d(TAG, "signup error=$it")
                             showErrorToast(it)
@@ -193,7 +192,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     this.reach5.startPasswordless(
                         email = emailPwdlBinding.text.toString(),
-                        successWithNoContent = { showToast("Email sent - Check your email box") },
+                        success = { showToast("Email sent - Check your email box") },
                         failure = {
                             Log.d(TAG, "signup error=$it")
                             showErrorToast(it)
@@ -206,7 +205,7 @@ class MainActivity : AppCompatActivity() {
                     this.reach5.startPasswordless(
                         phoneNumber = phoneNumberPwdlBinding.text.toString(),
                         redirectUrl = redirectUri,
-                        successWithNoContent = { showToast("Sms sent - Please enter the validation code below") },
+                        success = { showToast("Sms sent - Please enter the validation code below") },
                         failure = {
                             Log.d(TAG, "signup error=$it")
                             showErrorToast(it)
@@ -216,7 +215,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     this.reach5.startPasswordless(
                         phoneNumber = phoneNumberPwdlBinding.text.toString(),
-                        successWithNoContent = { showToast("Sms sent - Please enter the validation code below") },
+                        success = { showToast("Sms sent - Please enter the validation code below") },
                         failure = {
                             Log.d(TAG, "signup error=$it")
                             showErrorToast(it)

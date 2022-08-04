@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import co.reachfive.identity.sdk.core.ReachFive
 import co.reachfive.identity.sdk.core.WebAuthnDeviceAddResult
-import co.reachfive.identity.sdk.core.WebLogoutHandler
 import co.reachfive.identity.sdk.core.models.AuthToken
 import co.reachfive.identity.sdk.core.models.ReachFiveError
 import co.reachfive.identity.sdk.core.models.SdkConfig
@@ -19,7 +18,6 @@ import co.reachfive.identity.sdk.core.models.responses.webAuthn.DeviceCredential
 import co.reachfive.identity.sdk.demo.databinding.ActivityAuthenticatedBinding
 import co.reachfive.identity.sdk.demo.databinding.WebauthnDevicesBinding
 import io.github.cdimascio.dotenv.dotenv
-
 
 class AuthenticatedActivity : AppCompatActivity() {
     private val TAG = "Reach5_AuthActivity"
@@ -121,13 +119,7 @@ class AuthenticatedActivity : AppCompatActivity() {
 
         val handler = reach5.resolveResultHandler(requestCode, resultCode, data)
 
-        if (handler is WebLogoutHandler)
-            handler.handle {
-                Log.d("AuthenticatedActivity", "Logout success")
-                showToast("Successful logout!")
-                finish()
-            }
-        else if (handler is WebAuthnDeviceAddResult) {
+        if (handler is WebAuthnDeviceAddResult) {
             handler.handle(
                 success = {
                     showToast("New FIDO2 device registered")
