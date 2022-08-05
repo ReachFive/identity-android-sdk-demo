@@ -160,7 +160,8 @@ class MainActivity : AppCompatActivity() {
 
         passwordAuthBinding.passwordLogin.setOnClickListener {
             this.reach5.loginWithPassword(
-                username = emailPwd() ?: phoneNumberPwd() ?: "",
+                email = emailPwd(),
+                phoneNumber = phoneNumberPwd(),
                 password = passwordValue(),
                 success = { handleLoginSuccess(it) },
                 failure = {

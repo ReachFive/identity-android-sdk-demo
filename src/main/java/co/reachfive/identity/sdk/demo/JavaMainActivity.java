@@ -112,10 +112,10 @@ public class JavaMainActivity extends AppCompatActivity {
         findViewById(R.id.passwordLogin).setOnClickListener(view -> {
             String email = (!emailEditText.toString().trim().isEmpty()) ? emailEditText.toString().trim() : null;
             String phone = (!phoneNumberEditText.getText().toString().trim().isEmpty()) ? phoneNumberEditText.getText().toString().trim() : null;
-            String username = (email != null) ? email : (phone != null) ? phone : "";
 
             reach5.loginWithPassword(
-                    username,
+                    email,
+                    phone,
                     passwordEditText.getText().toString(),
                     this::handleLoginSuccess,
                     failure -> {
