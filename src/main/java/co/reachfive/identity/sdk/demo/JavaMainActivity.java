@@ -89,6 +89,7 @@ public class JavaMainActivity extends AppCompatActivity {
         EditText emailEditText = findViewById(R.id.email);
         EditText phoneNumberEditText = findViewById(R.id.phoneNumber);
         EditText passwordEditText = findViewById(R.id.password);
+        EditText customIdentifierEditText = findViewById(R.id.customIdentifier);
 
         findViewById(R.id.passwordSignup).setOnClickListener(view -> {
             ProfileSignupRequest signupRequest = (!emailEditText.getText().toString().isEmpty()) ?
@@ -112,10 +113,12 @@ public class JavaMainActivity extends AppCompatActivity {
         findViewById(R.id.passwordLogin).setOnClickListener(view -> {
             String email = (!emailEditText.toString().trim().isEmpty()) ? emailEditText.toString().trim() : null;
             String phone = (!phoneNumberEditText.getText().toString().trim().isEmpty()) ? phoneNumberEditText.getText().toString().trim() : null;
+            String customIdentifier = (!customIdentifierEditText.toString().trim().isEmpty()) ? customIdentifierEditText.toString().trim() : null;
 
             reach5.loginWithPassword(
                     email,
                     phone,
+                    customIdentifier,
                     passwordEditText.getText().toString(),
                     this::handleLoginSuccess,
                     failure -> {
