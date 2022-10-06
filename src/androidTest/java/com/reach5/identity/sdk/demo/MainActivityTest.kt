@@ -302,13 +302,12 @@ class MainActivityTest {
                 profile,
                 scope = openId,
                 success = { authToken ->
-                    // Check that the returned authentication token is not null
                     assertNotNull(authToken)
 
                     client.signup(
                             ProfileSignupRequest(email = anEmail(), customIdentifier = profile.customIdentifier, password = profile.password),
                             scope = openId,
-                            success = { fail("This test should have failed because the email should be already used.") },
+                            success = { fail("This test should have failed because the custom identifier should be already used.") },
                             failure = { error ->
                                 assertEquals("custom_id_already_exists", error.data?.error)
                                 assertEquals("Custom identifier already in use", error.data?.errorDescription)
