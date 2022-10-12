@@ -135,6 +135,14 @@ class MainActivity : AppCompatActivity() {
                 it
         }
 
+        val customIdentifierPwdBinding = passwordAuthBinding.customIdentifier
+        fun customIdentifierPwd() = customIdentifierPwdBinding.text.toString().let {
+            if (it.isBlank())
+                null
+            else
+                it
+        }
+
         val passwordBinding = passwordAuthBinding.password
         fun passwordValue() = passwordBinding.text.toString().trim()
 
@@ -142,6 +150,7 @@ class MainActivity : AppCompatActivity() {
             val signupRequest = ProfileSignupRequest(
                 email = emailPwd(),
                 phoneNumber = phoneNumberPwd(),
+                customIdentifier = customIdentifierPwd(),
                 password = passwordValue()
             )
 
@@ -162,6 +171,7 @@ class MainActivity : AppCompatActivity() {
             this.reach5.loginWithPassword(
                 email = emailPwd(),
                 phoneNumber = phoneNumberPwd(),
+                customIdentifier = customIdentifierPwd(),
                 password = passwordValue(),
                 success = { handleLoginSuccess(it) },
                 failure = {

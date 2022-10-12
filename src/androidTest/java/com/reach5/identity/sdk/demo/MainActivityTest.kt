@@ -243,8 +243,8 @@ class MainActivityTest {
             scope = openId,
             success = {
                 client.loginWithPassword(
-                    profile.email!!,
-                    profile.password,
+                    email = profile.email!!,
+                    password = profile.password,
                     scope = openId,
                     success = { passTest() },
                     failure = { failWithReachFiveError(it) }
@@ -263,8 +263,8 @@ class MainActivityTest {
             scope = openId,
             success = {
                 client.loginWithPassword(
-                    profile.phoneNumber!!,
-                    profile.password,
+                    phoneNumber = profile.phoneNumber!!,
+                    password = profile.password,
                     scope = openId,
                     success = { passTest() },
                     failure = { failWithReachFiveError(it) }
@@ -275,10 +275,55 @@ class MainActivityTest {
     }
 
     @Test
+    fun testSuccessfulLoginWithCustomIdentifier() = clientTest { client, passTest ->
+        val profile = aProfile().copy(customIdentifier = aCustomIdentifier())
+
+        client.signup(
+                profile,
+                scope =  openId,
+                success = {
+                    client.loginWithPassword(
+                            customIdentifier = profile.customIdentifier!!,
+                            password = profile.password,
+                            scope = openId,
+                            success = { passTest() },
+                            failure = { failWithReachFiveError(it) }
+                    )
+                },
+                failure = { failWithReachFiveError(it) }
+        )
+    }
+
+    @Test
+    fun testFailedSignupWithAlreadyUsedCustomIdentifier() = clientTest { client, passTest ->
+        val profile = aProfile().copy(customIdentifier = aCustomIdentifier())
+
+        client.signup(
+                profile,
+                scope = openId,
+                success = { authToken ->
+                    assertNotNull(authToken)
+
+                    client.signup(
+                            ProfileSignupRequest(email = anEmail(), customIdentifier = profile.customIdentifier, password = profile.password),
+                            scope = openId,
+                            success = { fail("This test should have failed because the custom identifier should be already used.") },
+                            failure = { error ->
+                                assertEquals("custom_id_already_exists", error.data?.error)
+                                assertEquals("Custom identifier already in use", error.data?.errorDescription)
+                                passTest()
+                            }
+                    )
+                },
+                failure = { failWithReachFiveError(it) }
+        )
+    }
+
+    @Test
     fun testFailedLoginWithNonExistingIdentifier() = clientTest { client, passTest ->
         client.loginWithPassword(
-            "satoshi.nakamoto@testaccount.io",
-            "buybitcoin",
+            email = "satoshi.nakamoto@testaccount.io",
+            password = "buybitcoin",
             scope = openId,
             success = { fail("This test should have failed because the profile is not registered.") },
             failure = { error ->
@@ -298,8 +343,8 @@ class MainActivityTest {
             scope = openId,
             success = {
                 client.loginWithPassword(
-                    profile.phoneNumber!!,
-                    "WRONG_PASSWORD",
+                    phoneNumber = profile.phoneNumber!!,
+                    password = "WRONG_PASSWORD",
                     scope = openId,
                     success = { fail("This test should have failed because the password is incorrect.") },
                     failure = { error ->
@@ -658,8 +703,8 @@ class MainActivityTest {
                     UpdatePasswordRequest.FreshAccessTokenParams(authToken, newPassword),
                     success = {
                         client.loginWithPassword(
-                            profile.email!!,
-                            newPassword,
+                            email = profile.email!!,
+                            password = newPassword,
                             success = { passTest() },
                             failure = { failWithReachFiveError(it) }
                         )
@@ -690,8 +735,8 @@ class MainActivityTest {
                     ),
                     success = {
                         client.loginWithPassword(
-                            profile.email!!,
-                            newPassword,
+                            email = profile.email!!,
+                            password = newPassword,
                             success = { passTest() },
                             failure = { failWithReachFiveError(it) }
                         )
@@ -962,6 +1007,8 @@ class MainActivityTest {
                 if (international) "+336$it"
                 else "06$it"
             }
+
+    private fun aCustomIdentifier(): String = UUID.randomUUID().toString()
 
     private fun generateString(length: Int, charset: String): String =
         (1..length)
