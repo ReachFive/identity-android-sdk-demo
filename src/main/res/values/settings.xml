@@ -3,5 +3,7 @@
     <string name="fb_login_protocol_scheme">fb2326266780745811</string>
     <string name="reachfive_scheme">reachfive</string>
     <string name="reachfive_client_id">LSCdhBOtrPeh8RFLz6bb</string>
+    <!-- integ LSCdhBOtrPeh8RFLz6bb -->
+    <!-- local uJsnvjlyiXELpM8iT9Cu -->
     <string name="reachfive_path">/callback</string>
 </resources>
