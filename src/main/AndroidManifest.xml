@@ -65,6 +65,9 @@
             android:required="false" />
 
     </application>
+    <queries>
+        <package android:name="com.tencent.mm" />
+    </queries>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
