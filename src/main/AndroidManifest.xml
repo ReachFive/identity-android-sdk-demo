@@ -52,11 +52,6 @@
         </activity>
 
         <activity
-                android:name="co.reachfive.identity.sdk.webview.ReachFiveLoginActivity"
-                android:screenOrientation="portrait"
-            android:exported="true" />
-
-        <activity
                 android:name=".JavaMainActivity"
                 android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="true" />
