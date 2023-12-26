@@ -31,5 +31,6 @@
     <string name="signup_with_fido2">Signup with FIDO2</string>
     <string name="tkn">Token</string>
     <string name="facebook_app_id">1634029666893228</string>
+    <string name="facebook_client_token">1a774a90e2e5ec97b21afcd93ce69909</string>
     <string name="custom_identifier">Custom ID</string>
 </resources>
