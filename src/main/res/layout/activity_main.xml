@@ -31,6 +31,30 @@
                 android:text="@string/login_web"
                 tools:ignore="ButtonStyle" />
 
+            <Button
+                    android:id="@+id/webviewlogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/login_webview"
+                    tools:ignore="ButtonStyle" />
+
+            <Button
+                    android:id="@+id/webview_sso_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/webview_sso_data"
+                    tools:ignore="ButtonStyle" />
+
+            <Button
+                    android:id="@+id/webview_logout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/webview_logout"
+                    tools:ignore="ButtonStyle" />
+
             <include
                 android:id="@+id/password_auth"
                 layout="@layout/password_auth" />

@@ -1,6 +1,7 @@
 package co.reachfive.identity.sdk.demo
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -116,6 +117,27 @@ class MainActivity : AppCompatActivity() {
                 origin = "origin",
                 activity = this
             )
+        }
+
+        mainActivityBinding.webviewlogin.setOnClickListener {
+            this.reach5.loginWithWebView(
+                state = "state",
+                nonce = "nonce",
+                origin = "origin",
+                activity = this
+            )
+        }
+
+        mainActivityBinding.webviewSsoData.setOnClickListener {
+            val intent = Intent(this, WebviewActivity::class.java)
+            intent.data = Uri.parse("https://$domain/identity/v1/sso/data")
+            startActivity(intent)
+        }
+
+        mainActivityBinding.webviewLogout.setOnClickListener {
+            val intent = Intent(this, WebviewActivity::class.java)
+            intent.data = Uri.parse("https://$domain/identity/v1/logout")
+            startActivity(intent)
         }
 
         val redirectUrlBinding = passwordAuthBinding.redirectUrl
