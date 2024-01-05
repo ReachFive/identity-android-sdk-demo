@@ -22,6 +22,7 @@ import co.reachfive.identity.sdk.demo.databinding.*
 import co.reachfive.identity.sdk.facebook.FacebookProvider
 import co.reachfive.identity.sdk.google.GoogleProvider
 import co.reachfive.identity.sdk.webview.WebViewProvider
+import co.reachfive.identity.sdk.wechat.WechatProvider
 import io.github.cdimascio.dotenv.dotenv
 
 
@@ -78,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(mainActivityBinding.root)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        val providersCreators = listOf(GoogleProvider(), FacebookProvider(), WebViewProvider())
+        val providersCreators = listOf(GoogleProvider(), FacebookProvider(), WebViewProvider(), WechatProvider())
 
         this.reach5 = ReachFive(
             sdkConfig = sdkConfig,

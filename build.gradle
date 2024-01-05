@@ -112,6 +112,7 @@ dependencies {
     implementation "co.reachfive.identity:sdk-facebook:$sdkVersion"
     implementation "co.reachfive.identity:sdk-google:$sdkVersion"
     implementation "co.reachfive.identity:sdk-webview:$sdkVersion"
+    implementation "co.reachfive.identity:sdk-wechat:$sdkVersion"
 
     implementation "androidx.appcompat:appcompat:1.4.2"
     implementation "androidx.cardview:cardview:1.0.0"
