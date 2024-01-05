@@ -23,6 +23,12 @@
         </activity>
 
         <activity
+                android:name=".WebviewActivity"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+                android:exported="true">
+        </activity>
+
+        <activity
                 android:name="co.reachfive.identity.sdk.demo.AuthenticatedActivity"
                 android:screenOrientation="portrait"
             android:exported="true"/>
@@ -44,11 +50,6 @@
                     tools:ignore="AppLinkUrlError" />
             </intent-filter>
         </activity>
-
-        <activity
-                android:name="co.reachfive.identity.sdk.webview.ReachFiveLoginActivity"
-                android:screenOrientation="portrait"
-            android:exported="true" />
 
         <activity
                 android:name=".JavaMainActivity"
