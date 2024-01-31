@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".MainActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/redirectUriInput"
+                android:layout_width="match_parent"
+                android:importantForAutofill="no"
+                android:layout_weight="1"
+                android:hint="@string/redirect_url_mfa_email_registration"
+                android:lines="1"
+                android:inputType="textUri"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <Button
+                android:id="@+id/startMfaEmailRegistration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/start_mfa_email_registration"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <EditText
+                android:id="@+id/emailMfaVerificationCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/code"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:paddingTop="0dp" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:paddingTop="20px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/verifyMfaEmailRegistration"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/verify_mfa_email_registration" />
+
+        <LinearLayout
+            android:paddingTop="100px"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/phoneNumberRegistration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/phone_number_enrollment_mfa"
+                android:importantForAutofill="no"
+                android:inputType="textUri"
+                android:lines="1" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <Button
+                android:id="@+id/startMfaPhoneNumberRegistration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/start_mfa_phone_number_registration"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <EditText
+                android:id="@+id/phoneNumberToVerify"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:hint="@string/phone_number_enrollment_mfa"
+                />
+            <EditText
+                android:paddingTop="0dp"
+                android:id="@+id/phoneNumberMfaVerificationCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/code"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                />
+
+            <Button
+                android:id="@+id/verifyMfaPhoneNumberRegistration"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/verify_mfa_phone_number_registration"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

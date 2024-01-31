@@ -16,6 +16,7 @@ import co.reachfive.identity.sdk.core.models.ReachFiveError
 import co.reachfive.identity.sdk.core.models.SdkConfig
 import co.reachfive.identity.sdk.core.models.responses.webAuthn.DeviceCredential
 import co.reachfive.identity.sdk.demo.databinding.ActivityAuthenticatedBinding
+import co.reachfive.identity.sdk.demo.databinding.MfaRegistrationBinding
 import co.reachfive.identity.sdk.demo.databinding.WebauthnDevicesBinding
 import io.github.cdimascio.dotenv.dotenv
 
@@ -34,6 +35,7 @@ class AuthenticatedActivity : AppCompatActivity() {
     private lateinit var authToken: AuthToken
 
     private lateinit var authenticatedActivityBinding: ActivityAuthenticatedBinding
+    private lateinit var mfaRegistrationBinding: MfaRegistrationBinding
 
     private lateinit var deviceAdapter: DevicesAdapter
     private lateinit var devicesDisplayed: List<DeviceCredential>
@@ -49,6 +51,7 @@ class AuthenticatedActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         authenticatedActivityBinding = ActivityAuthenticatedBinding.inflate(layoutInflater)
         devicesBinding = authenticatedActivityBinding.webauthnDevices
+        mfaRegistrationBinding = authenticatedActivityBinding.mfaRegistration
 
         setContentView(authenticatedActivityBinding.root)
 
@@ -110,6 +113,64 @@ class AuthenticatedActivity : AppCompatActivity() {
             })
         devicesBinding.devices.adapter = deviceAdapter
 
+        mfaRegistrationBinding.startMfaEmailRegistration.setOnClickListener {
+            val redirectUri = mfaRegistrationBinding.redirectUriInput.text.toString().let {
+                if (it.isBlank())
+                    null
+                else
+                    it
+            }
+            this.reach5.startMfaEmailRegistration(authToken,
+                redirectUri = redirectUri,
+                success = { showToast("Start MFA email registration")},
+                failure = {
+                    Log.d(TAG, "mfa email registration error = $it")
+                    showErrorToast(it)
+                },
+                activity = this)
+
+        }
+
+        mfaRegistrationBinding.startMfaPhoneNumberRegistration.setOnClickListener {
+            val phoneNumber = mfaRegistrationBinding.phoneNumberRegistration.text.toString()
+            this.reach5.startMfaPhoneNumberRegistration(authToken,
+                phoneNumber,
+                success = { showToast("Start MFA Phone number $phoneNumber registration")},
+                failure = {
+                    Log.d(TAG, "mfa email registration error = $it")
+                    showErrorToast(it)
+                },
+                activity = this)
+
+        }
+
+        mfaRegistrationBinding.verifyMfaEmailRegistration.setOnClickListener {
+            val verificationCode = mfaRegistrationBinding.emailMfaVerificationCode.text.toString()
+            this.reach5.verifyMfaEmailRegistration(
+                authToken,
+                verificationCode,
+                success = {showToast("MFA email registered")},
+                failure = {
+                    Log.d(TAG, "mfa email registration error = $it")
+                    showErrorToast(it)
+                },
+                activity = this)
+        }
+
+        mfaRegistrationBinding.verifyMfaPhoneNumberRegistration.setOnClickListener {
+            val phoneNumber = mfaRegistrationBinding.phoneNumberToVerify.text.toString()
+            val verificationCode = mfaRegistrationBinding.phoneNumberMfaVerificationCode.text.toString()
+            this.reach5.verifyMfaPhoneNumberRegistration(
+                authToken,
+                phoneNumber,
+                verificationCode,
+                success = {showToast("MFA Phone number $phoneNumber registered")},
+                failure = {
+                    Log.d(TAG, "mfa email registration error = $it")
+                    showErrorToast(it)
+                },
+                activity = this)
+        }
         refreshDevicesDisplayed()
     }
 
