@@ -66,4 +66,11 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="@string/signup" />
+
+    <Button
+            android:id="@+id/signupWithPasskey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/signup_with_passkey" />
 </LinearLayout>

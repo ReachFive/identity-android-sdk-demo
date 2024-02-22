@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.credentials.CredentialManager
 import co.reachfive.identity.sdk.core.LoginResultHandler
 import co.reachfive.identity.sdk.core.ReachFive
 import co.reachfive.identity.sdk.core.models.AuthToken
@@ -81,9 +82,12 @@ class MainActivity : AppCompatActivity() {
 
         val providersCreators = listOf(GoogleProvider(), FacebookProvider(), WebViewProvider(), WechatProvider())
 
+        val credentialManager = CredentialManager.create(applicationContext)
+
         this.reach5 = ReachFive(
             sdkConfig = sdkConfig,
-            providersCreators = providersCreators
+            providersCreators = providersCreators,
+            credentialManager = credentialManager,
         ).initialize({
             Log.d(TAG, "ReachFive init success")
         }, {
@@ -292,6 +296,25 @@ class MainActivity : AppCompatActivity() {
                 )
         }
 
+        webAuthnSignupBinding.signupWithPasskey.setOnClickListener {
+            this.reach5
+                .signupWithPasskey(
+                    profile = ProfileWebAuthnSignupRequest(
+                        email = webAuthnSignupBinding.signupWebAuthnEmail.text.toString(),
+                        givenName = webAuthnSignupBinding.signupWebAuthnGivenName.text.toString(),
+                        familyName = webAuthnSignupBinding.signupWebAuthnFamilyName.text.toString()
+                    ),
+                    origin = origin,
+                    friendlyName = webAuthnSignupBinding.signupWebAuthnNewFriendlyName.text.toString(),
+                    success = { handleLoginSuccess(it) },
+                    failure = {
+                        Log.d(TAG, "signupWithWebAuthn error=$it")
+                        showErrorToast(it)
+                    },
+                    context = this
+                )
+        }
+
         webAuthnLoginBinding.loginWithWebAuthn.setOnClickListener {
             val email = webAuthnLoginBinding.webAuthnEmail.text.toString()
             val webAuthnLoginRequest: WebAuthnLoginRequest =
@@ -312,6 +335,32 @@ class MainActivity : AppCompatActivity() {
                         showErrorToast(it)
                     },
                     activity = this
+                )
+        }
+
+        webAuthnLoginBinding.loginWithPasskey.setOnClickListener {
+
+            val email = webAuthnLoginBinding.webAuthnEmail.text.toString()
+            val webAuthnLoginRequest: WebAuthnLoginRequest =
+                if (email.isNotEmpty())
+                    WebAuthnLoginRequest.EmailWebAuthnLoginRequest(origin, email, assignedScope)
+                else
+                    WebAuthnLoginRequest.PhoneNumberWebAuthnLoginRequest(
+                        origin,
+                        webAuthnLoginBinding.webAuthnPhoneNumber.text.toString(),
+                        assignedScope
+                    )
+
+            this.reach5
+                .loginWithPasskey(
+                    loginRequest = webAuthnLoginRequest,
+                    success = { handleLoginSuccess(it) },
+                    failure = {
+                        Log.d(TAG, "loginWithWebAuthn error=$it")
+                        showErrorToast(it)
+                    },
+                    scope = assignedScope,
+                    context = this
                 )
         }
     }

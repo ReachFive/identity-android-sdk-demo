@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import androidx.credentials.CredentialManager;
 import co.reachfive.identity.sdk.core.JavaReachFive;
 import co.reachfive.identity.sdk.core.Provider;
 import co.reachfive.identity.sdk.core.models.AuthToken;
@@ -48,9 +49,12 @@ public class JavaMainActivity extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).setTitle("Java Sdk Example");
 
+        CredentialManager credentialManager = CredentialManager.create(getApplicationContext());
+
         reach5 = new JavaReachFive(
                 sdkConfig,
-                Arrays.asList(new GoogleProvider(), new WebViewProvider(), new FacebookProvider())
+                Arrays.asList(new GoogleProvider(), new WebViewProvider(), new FacebookProvider()),
+                credentialManager
         );
 
         reach5.initialize(t -> {

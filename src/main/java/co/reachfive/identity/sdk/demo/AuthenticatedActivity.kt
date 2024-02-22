@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.credentials.CredentialManager
 import co.reachfive.identity.sdk.core.ReachFive
 import co.reachfive.identity.sdk.core.WebAuthnDeviceAddResult
 import co.reachfive.identity.sdk.core.models.AuthToken
@@ -57,9 +58,11 @@ class AuthenticatedActivity : AppCompatActivity() {
         this.devicesDisplayed = listOf()
 
         val sdkConfig = intent.getParcelableExtra<SdkConfig>(SDK_CONFIG)!!
+        val credentialManager = CredentialManager.create(applicationContext)
         this.reach5 = ReachFive(
             sdkConfig = sdkConfig,
-            providersCreators = listOf()
+            providersCreators = listOf(),
+            credentialManager = credentialManager,
         )
 
         val givenNameTextView = findViewById<View>(R.id.user_given_name) as TextView
@@ -73,6 +76,24 @@ class AuthenticatedActivity : AppCompatActivity() {
 
         val phoneNumberTextView = findViewById<View>(R.id.user_phone_number) as TextView
         phoneNumberTextView.text = this.authToken.user?.phoneNumber
+
+        devicesBinding.registerPasskey.setOnClickListener {
+            this.reach5.registerNewPasskey(
+                authToken = this.authToken,
+                origin = origin,
+                friendlyName = devicesBinding.newFriendlyName.text.trim().toString(),
+                success = {
+                    showToast("New Passkey device registered")
+                    refreshDevicesDisplayed()
+                },
+                failure = {
+                    Log.d(TAG, "registerNewPasskey error=$it")
+                    showToast(it.data?.errorUserMsg ?: it.message)
+                },
+                context = this
+            )
+
+        }
 
         devicesBinding.newFriendlyName.setText(android.os.Build.MODEL)
         devicesBinding.addNewDevice.setOnClickListener {
