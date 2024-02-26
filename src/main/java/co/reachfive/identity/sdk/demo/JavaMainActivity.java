@@ -106,7 +106,8 @@ public class JavaMainActivity extends AppCompatActivity {
                     failure -> {
                         Log.d(TAG, "signup error=" + failure.getMessage());
                         showToast("Signup With Password Error " + failure.getMessage());
-                    }
+                    },
+                    null
             );
         });
 
@@ -124,7 +125,8 @@ public class JavaMainActivity extends AppCompatActivity {
                     failure -> {
                         Log.d(TAG, "loginWithPassword error=" + failure.getMessage());
                         showToast("Login With Password Error " + failure.getMessage());
-                    }
+                    },
+                    null
             );
         });
 
@@ -153,7 +155,8 @@ public class JavaMainActivity extends AppCompatActivity {
                     it -> {
                         showToast("LoginCallback error=" + it.getMessage());
                     },
-                    this
+                    this,
+                    null
             );
         }
     }
