@@ -72,7 +72,7 @@ public class JavaMainActivity extends AppCompatActivity {
 
         findViewById(R.id.weblogin).setOnClickListener(view -> {
             Set<String> scope = new HashSet<>(Arrays.asList("openid", "email", "profile", "phone_number", "offline_access", "events", "full_write"));
-            reach5.loginWithWeb(scope, "state", "origin", "nonce", this);
+            reach5.loginWithWeb(scope, "state", "origin",  "nonce", this);
         });
 
         providerAdapter = new ProvidersAdapter(getApplicationContext(), reach5.getProviders());
