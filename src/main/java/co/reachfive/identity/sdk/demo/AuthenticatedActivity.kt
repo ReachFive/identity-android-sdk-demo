@@ -14,9 +14,10 @@ import co.reachfive.identity.sdk.core.WebAuthnDeviceAddResult
 import co.reachfive.identity.sdk.core.models.AuthToken
 import co.reachfive.identity.sdk.core.models.ReachFiveError
 import co.reachfive.identity.sdk.core.models.SdkConfig
+import co.reachfive.identity.sdk.core.models.responses.MfaCredential
 import co.reachfive.identity.sdk.core.models.responses.webAuthn.DeviceCredential
 import co.reachfive.identity.sdk.demo.databinding.ActivityAuthenticatedBinding
-import co.reachfive.identity.sdk.demo.databinding.MfaRegistrationBinding
+import co.reachfive.identity.sdk.demo.databinding.MfaCredentialsBinding
 import co.reachfive.identity.sdk.demo.databinding.WebauthnDevicesBinding
 import io.github.cdimascio.dotenv.dotenv
 
@@ -35,7 +36,10 @@ class AuthenticatedActivity : AppCompatActivity() {
     private lateinit var authToken: AuthToken
 
     private lateinit var authenticatedActivityBinding: ActivityAuthenticatedBinding
-    private lateinit var mfaRegistrationBinding: MfaRegistrationBinding
+    private lateinit var mfaCredentialsBinding: MfaCredentialsBinding
+
+    private lateinit var mfaCredentialsAdapter: MfaCredentialsAdapter
+    private lateinit var mfaCredentials: List<MfaCredential>
 
     private lateinit var deviceAdapter: DevicesAdapter
     private lateinit var devicesDisplayed: List<DeviceCredential>
@@ -51,13 +55,15 @@ class AuthenticatedActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         authenticatedActivityBinding = ActivityAuthenticatedBinding.inflate(layoutInflater)
         devicesBinding = authenticatedActivityBinding.webauthnDevices
-        mfaRegistrationBinding = authenticatedActivityBinding.mfaRegistration
+        mfaCredentialsBinding = authenticatedActivityBinding.mfaCredentials
 
         setContentView(authenticatedActivityBinding.root)
 
 
         this.authToken = intent.getParcelableExtra(AUTH_TOKEN)!!
         this.devicesDisplayed = listOf()
+
+        this.mfaCredentials = listOf()
 
         val sdkConfig = intent.getParcelableExtra<SdkConfig>(SDK_CONFIG)!!
         this.reach5 = ReachFive(
@@ -113,8 +119,11 @@ class AuthenticatedActivity : AppCompatActivity() {
             })
         devicesBinding.devices.adapter = deviceAdapter
 
-        mfaRegistrationBinding.startMfaEmailRegistration.setOnClickListener {
-            val redirectUri = mfaRegistrationBinding.redirectUriInput.text.toString().let {
+        mfaCredentialsAdapter = MfaCredentialsAdapter(applicationContext, this.mfaCredentials)
+        mfaCredentialsBinding.credentials.adapter = mfaCredentialsAdapter
+
+        mfaCredentialsBinding.startMfaEmailRegistration.setOnClickListener {
+            val redirectUri = mfaCredentialsBinding.redirectUriInput.text.toString().let {
                 if (it.isBlank())
                     null
                 else
@@ -126,26 +135,24 @@ class AuthenticatedActivity : AppCompatActivity() {
                 failure = {
                     Log.d(TAG, "mfa email registration error = $it")
                     showErrorToast(it)
-                },
-                activity = this)
+                })
 
         }
 
-        mfaRegistrationBinding.startMfaPhoneNumberRegistration.setOnClickListener {
-            val phoneNumber = mfaRegistrationBinding.phoneNumberRegistration.text.toString()
+        mfaCredentialsBinding.startMfaPhoneNumberRegistration.setOnClickListener {
+            val phoneNumber = mfaCredentialsBinding.phoneNumberRegistration.text.toString()
             this.reach5.startMfaPhoneNumberRegistration(authToken,
                 phoneNumber,
                 success = { showToast("Start MFA Phone number $phoneNumber registration")},
                 failure = {
                     Log.d(TAG, "mfa email registration error = $it")
                     showErrorToast(it)
-                },
-                activity = this)
+                })
 
         }
 
-        mfaRegistrationBinding.verifyMfaEmailRegistration.setOnClickListener {
-            val verificationCode = mfaRegistrationBinding.emailMfaVerificationCode.text.toString()
+        mfaCredentialsBinding.verifyMfaEmailRegistration.setOnClickListener {
+            val verificationCode = mfaCredentialsBinding.emailMfaVerificationCode.text.toString()
             this.reach5.verifyMfaEmailRegistration(
                 authToken,
                 verificationCode,
@@ -153,24 +160,21 @@ class AuthenticatedActivity : AppCompatActivity() {
                 failure = {
                     Log.d(TAG, "mfa email registration error = $it")
                     showErrorToast(it)
-                },
-                activity = this)
+                })
         }
 
-        mfaRegistrationBinding.verifyMfaPhoneNumberRegistration.setOnClickListener {
-            val phoneNumber = mfaRegistrationBinding.phoneNumberToVerify.text.toString()
-            val verificationCode = mfaRegistrationBinding.phoneNumberMfaVerificationCode.text.toString()
+        mfaCredentialsBinding.verifyMfaPhoneNumberRegistration.setOnClickListener {
+            val verificationCode = mfaCredentialsBinding.phoneNumberMfaVerificationCode.text.toString()
             this.reach5.verifyMfaPhoneNumberRegistration(
                 authToken,
-                phoneNumber,
                 verificationCode,
-                success = {showToast("MFA Phone number $phoneNumber registered")},
+                success = {showToast("MFA Phone number registered")},
                 failure = {
                     Log.d(TAG, "mfa email registration error = $it")
                     showErrorToast(it)
-                },
-                activity = this)
+                })
         }
+        refreshMfaCredentialsDisplayed()
         refreshDevicesDisplayed()
     }
 
@@ -229,6 +233,20 @@ class AuthenticatedActivity : AppCompatActivity() {
             },
             failure = {
                 Log.d(TAG, "listWebAuthnDevices error=$it")
+                showErrorToast(it)
+            }
+        )
+    }
+
+    private fun refreshMfaCredentialsDisplayed() {
+        reach5.listMfaCredentials(
+            authToken = authToken,
+            success = {
+                this.mfaCredentials = it.credentials
+                this.mfaCredentialsAdapter.refresh(this.mfaCredentials)
+            },
+            failure = {
+                Log.d(TAG, "listMfaCredentials error=$it")
                 showErrorToast(it)
             }
         )

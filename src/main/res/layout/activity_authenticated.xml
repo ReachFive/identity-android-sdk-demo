@@ -48,8 +48,8 @@
                 layout="@layout/webauthn_devices"/>
 
             <include
-                android:id="@+id/mfa_registration"
-                layout="@layout/mfa_registration"
+                android:id="@+id/mfa_credentials"
+                layout="@layout/mfa_credentials"
                 />
         </LinearLayout>
     </ScrollView>
