@@ -156,7 +156,10 @@ class AuthenticatedActivity : AppCompatActivity() {
             this.reach5.verifyMfaEmailRegistration(
                 authToken,
                 verificationCode,
-                success = {showToast("MFA email registered")},
+                success = {
+                    refreshMfaCredentialsDisplayed()
+                    showToast("MFA email registered")
+                          },
                 failure = {
                     Log.d(TAG, "mfa email registration error = $it")
                     showErrorToast(it)
@@ -168,7 +171,10 @@ class AuthenticatedActivity : AppCompatActivity() {
             this.reach5.verifyMfaPhoneNumberRegistration(
                 authToken,
                 verificationCode,
-                success = {showToast("MFA Phone number registered")},
+                success = {
+                    refreshMfaCredentialsDisplayed()
+                    showToast("MFA Phone number registered")
+                          },
                 failure = {
                     Log.d(TAG, "mfa email registration error = $it")
                     showErrorToast(it)
