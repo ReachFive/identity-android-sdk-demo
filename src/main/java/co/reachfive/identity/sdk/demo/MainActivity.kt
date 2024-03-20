@@ -285,7 +285,7 @@ class MainActivity : AppCompatActivity() {
                         givenName = webAuthnSignupBinding.signupWebAuthnGivenName.text.toString(),
                         familyName = webAuthnSignupBinding.signupWebAuthnFamilyName.text.toString()
                     ),
-                    origin = origin,
+                    originWebauthn = origin,
                     friendlyName = webAuthnSignupBinding.signupWebAuthnNewFriendlyName.text.toString(),
                     success = {},
                     failure = {
