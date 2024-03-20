@@ -78,7 +78,7 @@ class AuthenticatedActivity : AppCompatActivity() {
         devicesBinding.addNewDevice.setOnClickListener {
             this.reach5.addNewWebAuthnDevice(
                 authToken = this.authToken,
-                origin = origin,
+                originWebauthn = origin,
                 friendlyName = devicesBinding.newFriendlyName.text.trim().toString(),
                 failure = {
                     Log.d(TAG, "addNewWebAuthnDevice error=$it")
