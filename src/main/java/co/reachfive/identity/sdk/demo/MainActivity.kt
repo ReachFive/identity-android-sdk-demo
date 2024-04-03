@@ -8,7 +8,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.credentials.CredentialManager
 import co.reachfive.identity.sdk.core.LoginResultHandler
 import co.reachfive.identity.sdk.core.ReachFive
 import co.reachfive.identity.sdk.core.models.AuthToken
@@ -54,7 +53,7 @@ class MainActivity : AppCompatActivity() {
     // This variable is only mandatory for the FIDO2 login flow
     private val origin = dotenv["ORIGIN"] ?: ""
 
-    private val sdkConfig = SdkConfig(domain, clientId, scheme)
+    private val sdkConfig = SdkConfig(domain, clientId, scheme, origin)
 
     private val assignedScope = setOf(
         "openid",
@@ -82,12 +81,12 @@ class MainActivity : AppCompatActivity() {
 
         val providersCreators = listOf(GoogleProvider(), FacebookProvider(), WebViewProvider(), WechatProvider())
 
-        val credentialManager = CredentialManager.create(applicationContext)
+        val providersCreators =
+            listOf(GoogleProvider(), FacebookProvider(), WebViewProvider(), WechatProvider())
 
         this.reach5 = ReachFive(
             sdkConfig = sdkConfig,
             providersCreators = providersCreators,
-            credentialManager = credentialManager,
         ).initialize({
             Log.d(TAG, "ReachFive init success")
         }, {
@@ -297,21 +296,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         webAuthnSignupBinding.signupWithPasskey.setOnClickListener {
+            val email = webAuthnSignupBinding.signupWebAuthnEmail.text.toString()
+            val phone = webAuthnSignupBinding.signupWebAuthnPhone.text.toString()
             this.reach5
                 .signupWithPasskey(
-                    profile = ProfileWebAuthnSignupRequest(
-                        email = webAuthnSignupBinding.signupWebAuthnEmail.text.toString(),
-                        givenName = webAuthnSignupBinding.signupWebAuthnGivenName.text.toString(),
-                        familyName = webAuthnSignupBinding.signupWebAuthnFamilyName.text.toString()
-                    ),
-                    origin = origin,
+                    profile = if(email.isNotEmpty()) ProfileWebAuthnSignupRequest(email = email) else ProfileWebAuthnSignupRequest(phoneNumber = phone),
                     friendlyName = webAuthnSignupBinding.signupWebAuthnNewFriendlyName.text.toString(),
                     success = { handleLoginSuccess(it) },
                     failure = {
                         Log.d(TAG, "signupWithWebAuthn error=$it")
                         showErrorToast(it)
                     },
-                    context = this
+                    activity = this
                 )
         }
 
@@ -360,7 +356,21 @@ class MainActivity : AppCompatActivity() {
                         showErrorToast(it)
                     },
                     scope = assignedScope,
-                    context = this
+                    activity = this
+                )
+        }
+
+        webAuthnLoginBinding.discoverableLogin.setOnClickListener {
+
+            this.reach5
+                .discoverableLogin(
+                    success = { handleLoginSuccess(it) },
+                    failure = {
+                        Log.d(TAG, "discoverableLogin error=$it")
+                        showErrorToast(it)
+                    },
+                    scope = assignedScope,
+                    activity = this
                 )
         }
     }

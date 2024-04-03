@@ -19,6 +19,7 @@
     <string name="webview_logout">Webview logout</string>
     <string name="login">Login</string>
     <string name="login_with_passkey">Login with Passkey</string>
+    <string name="discoverable_login">Discoverable login</string>
     <string name="login_with_fido2">Login with FIDO2</string>
     <string name="login_with_callback">Login with callback</string>
     <string name="logout">Logout</string>
@@ -36,4 +37,10 @@
     <string name="facebook_app_id">1634029666893228</string>
     <string name="facebook_client_token">1a774a90e2e5ec97b21afcd93ce69909</string>
     <string name="custom_identifier">Custom ID</string>
+<string name="asset_statements" translatable="false">
+[{
+  \"include\": \"https://dev-sandbox-268508.web.app/.well-known/assetlinks.json\"
+}]
+</string>
+
 </resources>

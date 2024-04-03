@@ -51,4 +51,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/login_with_passkey" />
+
+    <Button
+        android:id="@+id/discoverableLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/discoverable_login" />
 </LinearLayout>

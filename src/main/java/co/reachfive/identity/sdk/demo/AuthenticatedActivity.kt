@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.credentials.CredentialManager
 import co.reachfive.identity.sdk.core.ReachFive
 import co.reachfive.identity.sdk.core.WebAuthnDeviceAddResult
 import co.reachfive.identity.sdk.core.models.AuthToken
@@ -58,11 +57,9 @@ class AuthenticatedActivity : AppCompatActivity() {
         this.devicesDisplayed = listOf()
 
         val sdkConfig = intent.getParcelableExtra<SdkConfig>(SDK_CONFIG)!!
-        val credentialManager = CredentialManager.create(applicationContext)
         this.reach5 = ReachFive(
             sdkConfig = sdkConfig,
             providersCreators = listOf(),
-            credentialManager = credentialManager,
         )
 
         val givenNameTextView = findViewById<View>(R.id.user_given_name) as TextView
@@ -80,7 +77,6 @@ class AuthenticatedActivity : AppCompatActivity() {
         devicesBinding.registerPasskey.setOnClickListener {
             this.reach5.registerNewPasskey(
                 authToken = this.authToken,
-                origin = origin,
                 friendlyName = devicesBinding.newFriendlyName.text.trim().toString(),
                 success = {
                     showToast("New Passkey device registered")
@@ -90,7 +86,7 @@ class AuthenticatedActivity : AppCompatActivity() {
                     Log.d(TAG, "registerNewPasskey error=$it")
                     showToast(it.data?.errorUserMsg ?: it.message)
                 },
-                context = this
+                activity = this
             )
 
         }
@@ -141,6 +137,8 @@ class AuthenticatedActivity : AppCompatActivity() {
         val handler = reach5.resolveResultHandler(requestCode, resultCode, data)
 
         if (handler is WebAuthnDeviceAddResult) {
+            Log.d(TAG, "onActivityResult - is webetc")
+
             handler.handle(
                 success = {
                     showToast("New FIDO2 device registered")

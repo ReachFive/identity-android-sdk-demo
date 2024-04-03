@@ -27,7 +27,7 @@ buildscript {
     dependencies {
         classpath "com.github.ben-manes:gradle-versions-plugin:0.42.0"
 
-        classpath 'com.android.tools.build:gradle:8.2.2'
+        classpath 'com.android.tools.build:gradle:8.3.1'
         classpath "com.google.gms:google-services:4.3.13"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
@@ -123,7 +123,6 @@ dependencies {
     implementation ext.kotlin_stdlib
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
-    implementation 'androidx.credentials:credentials:1.2.0'
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 
     androidTestImplementation "androidx.test.ext:junit:1.1.3"
