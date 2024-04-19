@@ -59,7 +59,7 @@ class AuthenticatedActivity : AppCompatActivity() {
         val sdkConfig = intent.getParcelableExtra<SdkConfig>(SDK_CONFIG)!!
         this.reach5 = ReachFive(
             sdkConfig = sdkConfig,
-            providersCreators = listOf()
+            providersCreators = listOf(),
         )
 
         val givenNameTextView = findViewById<View>(R.id.user_given_name) as TextView
@@ -73,6 +73,23 @@ class AuthenticatedActivity : AppCompatActivity() {
 
         val phoneNumberTextView = findViewById<View>(R.id.user_phone_number) as TextView
         phoneNumberTextView.text = this.authToken.user?.phoneNumber
+
+        devicesBinding.registerPasskey.setOnClickListener {
+            this.reach5.registerNewPasskey(
+                authToken = this.authToken,
+                friendlyName = devicesBinding.newFriendlyName.text.trim().toString(),
+                success = {
+                    showToast("New Passkey device registered")
+                    refreshDevicesDisplayed()
+                },
+                failure = {
+                    Log.d(TAG, "registerNewPasskey error=$it")
+                    showToast(it.data?.errorUserMsg ?: it.message)
+                },
+                activity = this
+            )
+
+        }
 
         devicesBinding.newFriendlyName.setText(android.os.Build.MODEL)
         devicesBinding.addNewDevice.setOnClickListener {
@@ -120,6 +137,8 @@ class AuthenticatedActivity : AppCompatActivity() {
         val handler = reach5.resolveResultHandler(requestCode, resultCode, data)
 
         if (handler is WebAuthnDeviceAddResult) {
+            Log.d(TAG, "onActivityResult - is webetc")
+
             handler.handle(
                 success = {
                     showToast("New FIDO2 device registered")

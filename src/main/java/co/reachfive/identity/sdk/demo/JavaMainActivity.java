@@ -43,7 +43,8 @@ public class JavaMainActivity extends AppCompatActivity {
         SdkConfig sdkConfig = new SdkConfig(
                 Objects.requireNonNull(dotenv.get("DOMAIN")),
                 Objects.requireNonNull(dotenv.get("CLIENT_ID")),
-                Objects.requireNonNull(dotenv.get("SCHEME"))
+                Objects.requireNonNull(dotenv.get("SCHEME")),
+                null
         );
 
         Objects.requireNonNull(getSupportActionBar()).setTitle("Java Sdk Example");

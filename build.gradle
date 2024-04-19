@@ -6,15 +6,15 @@ def ext = rootProject.ext
 
 buildscript {
     ext {
-        sdkVersion = "9.0.0"
+        sdkVersion = "9.2.0-SNAPSHOT"
 
         kotlin_version = "1.7.10"
         kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
         androidSettings = [
                 min_sdk_version    : 28,
-                target_sdk_version : 32,
-                compile_sdk_version: 32,
+                target_sdk_version : 34,
+                compile_sdk_version: 34,
                 version_code       : 4
         ]
     }
@@ -27,7 +27,7 @@ buildscript {
     dependencies {
         classpath "com.github.ben-manes:gradle-versions-plugin:0.42.0"
 
-        classpath 'com.android.tools.build:gradle:7.2.2'
+        classpath 'com.android.tools.build:gradle:8.3.1'
         classpath "com.google.gms:google-services:4.3.13"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
@@ -92,6 +92,8 @@ android {
     lint {
         abortOnError false
     }
+
+    namespace 'co.reachfive.identity.sdk.demo'
 
     tasks.withType(Test) {
         maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1

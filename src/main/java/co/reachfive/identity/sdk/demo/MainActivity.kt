@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
     // This variable is only mandatory for the FIDO2 login flow
     private val origin = dotenv["ORIGIN"] ?: ""
 
-    private val sdkConfig = SdkConfig(domain, clientId, scheme)
+    private val sdkConfig = SdkConfig(domain, clientId, scheme, origin)
 
     private val assignedScope = setOf(
         "openid",
@@ -79,11 +79,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(mainActivityBinding.root)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        val providersCreators = listOf(GoogleProvider(), FacebookProvider(), WebViewProvider(), WechatProvider())
+
+        val providersCreators =
+            listOf(GoogleProvider(), FacebookProvider(), WebViewProvider(), WechatProvider())
 
         this.reach5 = ReachFive(
             sdkConfig = sdkConfig,
-            providersCreators = providersCreators
+            providersCreators = providersCreators,
         ).initialize({
             Log.d(TAG, "ReachFive init success")
         }, {
@@ -292,6 +294,22 @@ class MainActivity : AppCompatActivity() {
                 )
         }
 
+        webAuthnSignupBinding.signupWithPasskey.setOnClickListener {
+            val email = webAuthnSignupBinding.signupWebAuthnEmail.text.toString()
+            val phone = webAuthnSignupBinding.signupWebAuthnPhone.text.toString()
+            this.reach5
+                .signupWithPasskey(
+                    profile = if(email.isNotEmpty()) ProfileWebAuthnSignupRequest(email = email) else ProfileWebAuthnSignupRequest(phoneNumber = phone),
+                    friendlyName = webAuthnSignupBinding.signupWebAuthnNewFriendlyName.text.toString(),
+                    success = { handleLoginSuccess(it) },
+                    failure = {
+                        Log.d(TAG, "signupWithWebAuthn error=$it")
+                        showErrorToast(it)
+                    },
+                    activity = this
+                )
+        }
+
         webAuthnLoginBinding.loginWithWebAuthn.setOnClickListener {
             val email = webAuthnLoginBinding.webAuthnEmail.text.toString()
             val webAuthnLoginRequest: WebAuthnLoginRequest =
@@ -311,6 +329,46 @@ class MainActivity : AppCompatActivity() {
                         Log.d(TAG, "loginWithWebAuthn error=$it")
                         showErrorToast(it)
                     },
+                    activity = this
+                )
+        }
+
+        webAuthnLoginBinding.loginWithPasskey.setOnClickListener {
+
+            val email = webAuthnLoginBinding.webAuthnEmail.text.toString()
+            val webAuthnLoginRequest: WebAuthnLoginRequest =
+                if (email.isNotEmpty())
+                    WebAuthnLoginRequest.EmailWebAuthnLoginRequest(origin, email, assignedScope)
+                else
+                    WebAuthnLoginRequest.PhoneNumberWebAuthnLoginRequest(
+                        origin,
+                        webAuthnLoginBinding.webAuthnPhoneNumber.text.toString(),
+                        assignedScope
+                    )
+
+            this.reach5
+                .loginWithPasskey(
+                    loginRequest = webAuthnLoginRequest,
+                    success = { handleLoginSuccess(it) },
+                    failure = {
+                        Log.d(TAG, "loginWithWebAuthn error=$it")
+                        showErrorToast(it)
+                    },
+                    scope = assignedScope,
+                    activity = this
+                )
+        }
+
+        webAuthnLoginBinding.discoverableLogin.setOnClickListener {
+
+            this.reach5
+                .discoverableLogin(
+                    success = { handleLoginSuccess(it) },
+                    failure = {
+                        Log.d(TAG, "discoverableLogin error=$it")
+                        showErrorToast(it)
+                    },
+                    scope = assignedScope,
                     activity = this
                 )
         }
