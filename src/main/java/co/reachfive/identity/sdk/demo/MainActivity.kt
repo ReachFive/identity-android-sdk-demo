@@ -79,7 +79,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(mainActivityBinding.root)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        val providersCreators = listOf(GoogleProvider(), FacebookProvider(), WebViewProvider(), WechatProvider())
 
         val providersCreators =
             listOf(GoogleProvider(), FacebookProvider(), WebViewProvider(), WechatProvider())
