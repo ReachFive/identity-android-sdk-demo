@@ -63,6 +63,9 @@
                 android:id="@+id/passwordless_auth"
                 layout="@layout/passwordless_auth" />
 
+            <include
+                android:id="@+id/mfa_registration"
+                layout="@layout/mfa_credentials"/>
 
             <include
                 android:id="@+id/webauthn_signup"
