@@ -62,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         "phone_number",
         "offline_access",
         "events",
+        "mfa",
         "full_write"
     )
 
@@ -198,6 +199,7 @@ class MainActivity : AppCompatActivity() {
                 phoneNumber = phoneNumberPwd(),
                 customIdentifier = customIdentifierPwd(),
                 password = passwordValue(),
+                scope = assignedScope,
                 success = { handleLoginSuccess(it) },
                 failure = {
                     Log.d(TAG, "loginWithPassword error=$it")

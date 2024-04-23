@@ -119,10 +119,12 @@ dependencies {
     implementation "androidx.appcompat:appcompat:1.4.2"
     implementation "androidx.cardview:cardview:1.0.0"
     implementation "io.github.cdimascio:java-dotenv:5.2.2"
+    implementation 'com.google.android.material:material:1.0.0'
 
     implementation ext.kotlin_stdlib
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 
     androidTestImplementation "androidx.test.ext:junit:1.1.3"
