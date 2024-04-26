@@ -99,7 +99,7 @@ class MfaFragment(private val reach5: ReachFive,
         }
 
         view.findViewById<Button>(R.id.startMfaStepUp).setOnClickListener {
-            val authType = if(view.findViewById<RadioButton>(R.id.emailCredentialType).isActivated) CredentialMfaType.sms else CredentialMfaType.email
+            val authType = if(view.findViewById<RadioButton>(R.id.emailCredentialType).isChecked) CredentialMfaType.email else CredentialMfaType.sms
             this.reach5.startStepUp(
                 authToken,
                 authType,
