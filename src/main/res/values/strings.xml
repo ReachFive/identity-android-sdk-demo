@@ -33,6 +33,8 @@
     <string name="remove">Remove</string>
     <string name="start_passwordless">Start Passwordless</string>
     <string name="start_mfa_email_registration">Start Mfa email Registration</string>
+    <string name="start_step_up">Start Step up</string>
+    <string name="end_step_up">End step up</string>
     <string name="start_mfa_phone_number_registration">Start Mfa Phone Number Registration</string>
     <string name="signup">Signup</string>
     <string name="signup_with_passkey">Signup with passkey</string>
