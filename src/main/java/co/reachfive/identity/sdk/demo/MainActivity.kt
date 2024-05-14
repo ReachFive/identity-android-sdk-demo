@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var webAuthnLoginBinding: WebauthnLoginBinding
     private lateinit var webAuthnSignupBinding: WebauthnSignupBinding
+    private lateinit var webAuthnResetBinding: WebauthnResetBinding
     private lateinit var passwordAuthBinding: PasswordAuthBinding
     private lateinit var passwordlessAuthBinding: PasswordlessAuthBinding
     private lateinit var mainActivityBinding: ActivityMainBinding
@@ -77,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         passwordlessAuthBinding = mainActivityBinding.passwordlessAuth
         webAuthnLoginBinding = mainActivityBinding.webauthnLogin
         webAuthnSignupBinding = mainActivityBinding.webauthnSignup
+        webAuthnResetBinding = mainActivityBinding.webauthnReset
         setContentView(mainActivityBinding.root)
         setSupportActionBar(findViewById(R.id.toolbar))
 
@@ -203,6 +205,18 @@ class MainActivity : AppCompatActivity() {
                 success = { handleLoginSuccess(it) },
                 failure = {
                     Log.d(TAG, "loginWithPassword error=$it")
+                    showErrorToast(it)
+                }
+            )
+        }
+
+        passwordAuthBinding.accountRecovery.setOnClickListener {
+            this.reach5.requestAccountRecovery(
+                email = emailPwd(),
+                phoneNumber = phoneNumberPwd(),
+                success = { showToast("Request Account Recovery: code sent") },
+                failure = {
+                    Log.d(TAG, "requestAccountRecovery error=$it")
                     showErrorToast(it)
                 }
             )
@@ -374,7 +388,25 @@ class MainActivity : AppCompatActivity() {
                     activity = this
                 )
         }
+
+        webAuthnResetBinding.resetWebAuthn.setOnClickListener {
+            this.reach5
+                .resetPasskeys(
+                    email = webAuthnResetBinding.resetWebAuthnEmail.text.toString().ifBlank { null },
+                    phoneNumber = webAuthnResetBinding.resetWebAuthnPhone.text.toString().ifBlank { null },
+                    friendlyName = webAuthnResetBinding.resetWebAuthnNewFriendlyName.text.toString(),
+                    verificationCode = webAuthnResetBinding.resetWebAuthnVerificationCode.text.toString(),
+                    success = { showToast("Reset Passkeys Success")},
+                    failure = {
+                        Log.d(TAG, "resetPasskeys error=$it")
+                        showErrorToast(it)
+                    },
+                    activity = this
+                )
+        }
+
     }
+
 
     @Suppress("deprecation")
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

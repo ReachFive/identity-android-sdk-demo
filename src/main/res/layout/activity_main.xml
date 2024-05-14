@@ -76,6 +76,10 @@
                 layout="@layout/webauthn_login" />
 
             <include
+                android:id="@+id/webauthn_reset"
+                layout="@layout/webauthn_reset" />
+
+            <include
                 android:id="@+id/callback_login"
                 layout="@layout/callback_login" />
         </LinearLayout>
