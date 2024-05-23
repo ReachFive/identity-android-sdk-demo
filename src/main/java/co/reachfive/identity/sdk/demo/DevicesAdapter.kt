@@ -37,9 +37,15 @@ class DevicesAdapter(
 
     private class ViewHolder(row: View?) {
         var friendlyName: TextView? = null
+        var createdAt: TextView? = null
+        var lastUsedAt: TextView? = null
+        var provider: TextView? = null
 
         init {
             this.friendlyName = row?.findViewById(R.id.friendlyName)
+            this.createdAt = row?.findViewById(R.id.createdAt)
+            this.lastUsedAt = row?.findViewById(R.id.lastUsedAt)
+            this.provider = row?.findViewById(R.id.provider)
         }
     }
 
@@ -60,6 +66,9 @@ class DevicesAdapter(
         val device = devices[position]
 
         viewHolder.friendlyName?.text = device.friendlyName
+        viewHolder.createdAt?.text = device.createdAt
+        viewHolder.lastUsedAt?.text = device.lastUsedAt
+        viewHolder.provider?.text = device.aaguid
 
         val deleteDeviceButton = view?.findViewById(R.id.removeDevice) as Button
         deleteDeviceButton.setOnClickListener {
