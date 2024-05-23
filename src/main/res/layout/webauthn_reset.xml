@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/reset_passkeys" />
+
+    <EditText
+        android:id="@+id/resetWebAuthnEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:lines="1" />
+
+    <EditText
+        android:id="@+id/resetWebAuthnPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="@string/phone_number"
+        android:importantForAutofill="no"
+        android:inputType="phone"
+        android:lines="1" />
+
+    <EditText
+        android:id="@+id/resetWebAuthnNewFriendlyName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="@string/friendly_name"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:lines="1" />
+
+    <EditText
+        android:id="@+id/resetWebAuthnVerificationCode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="@string/verification_code"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:lines="1" />
+
+    <Button
+        android:id="@+id/resetWebAuthn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/reset_passkeys" />
+
+</LinearLayout>
