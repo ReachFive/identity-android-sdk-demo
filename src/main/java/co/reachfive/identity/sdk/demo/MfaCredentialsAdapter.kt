@@ -5,11 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.Button
 import android.widget.TextView
 import co.reachfive.identity.sdk.core.models.responses.MfaCredential
 
+interface ButtonCredentialCallback {
+    fun removeCredentialCallback(position: Int)
+}
 
-class MfaCredentialsAdapter(private val context: Context, private var credentials: List<MfaCredential>): BaseAdapter() {
+class MfaCredentialsAdapter(private val context: Context, private var credentials: List<MfaCredential>, var callback: ButtonCredentialCallback): BaseAdapter() {
     override fun getCount(): Int {
         return credentials.size
     }
@@ -19,7 +23,7 @@ class MfaCredentialsAdapter(private val context: Context, private var credential
         notifyDataSetChanged()
     }
 
-    override fun getItem(p0: Int): Any {
+    override fun getItem(p0: Int): MfaCredential {
         return credentials[p0]
     }
 
@@ -38,7 +42,7 @@ class MfaCredentialsAdapter(private val context: Context, private var credential
         }
     }
 
-    override fun getView(p0: Int, convertView: View?, p2: ViewGroup?): View {
+    override fun getView(position: Int, convertView: View?, p2: ViewGroup?): View {
         val view: View?
         val viewHolder: ViewHolder
         if (convertView != null) {
@@ -52,12 +56,18 @@ class MfaCredentialsAdapter(private val context: Context, private var credential
             view?.tag = viewHolder
         }
 
-        val credential = credentials[p0]
+        val credential = credentials[position]
 
         viewHolder.friendlyName?.text = credential.friendlyName
         viewHolder.credential?.text = credential.email ?: credential.phoneNumber
         viewHolder.createdAt?.text = credential.createdAt
 
-        return view as View
+        val deleteCredentialButton = view?.findViewById(R.id.removeCredential) as Button
+        deleteCredentialButton.setOnClickListener {
+            credentials.drop(position)
+            callback.removeCredentialCallback(position)
+        }
+
+        return view
     }
 }

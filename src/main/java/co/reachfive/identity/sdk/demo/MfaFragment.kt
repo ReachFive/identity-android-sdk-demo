@@ -36,7 +36,39 @@ class MfaFragment(private val reach5: ReachFive,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.mfa_fragment, container, false)
-        mfaCredentialsAdapter = MfaCredentialsAdapter(requireContext(), this.mfaCredentials)
+        mfaCredentialsAdapter = MfaCredentialsAdapter(requireContext(), this.mfaCredentials, object: ButtonCredentialCallback {
+            override fun removeCredentialCallback(position: Int) {
+                val credential = mfaCredentialsAdapter.getItem(position)
+
+                if(credential.type == CredentialMfaType.email) {
+                    reach5.removeMfaEmail(
+                        authToken,
+                        success = {
+                            showToast("Removed MFA email successfully")
+                            refreshMfaCredentialsDisplayed()
+                        },
+                        failure = {
+                            Log.d(TAG, "Removed mfa email error = $it")
+                            showErrorToast(it)
+                        }
+                    )
+                } else {
+                    reach5.removeMfaPhoneNumber(
+                        authToken,
+                        phoneNumber = credential.phoneNumber!!,
+                        success = {
+                            showToast("Removed MFA phone number successfully")
+                            refreshMfaCredentialsDisplayed()
+
+                        },
+                        failure = {
+                            Log.d(TAG, "Removed mfa phone number error = $it")
+                            showErrorToast(it)
+                        }
+                    )
+                }
+            }
+        })
         view.findViewById<ListView>(R.id.credentials).adapter = mfaCredentialsAdapter
 
         view.findViewById<Button>(R.id.startMfaEmailRegistration).setOnClickListener {
