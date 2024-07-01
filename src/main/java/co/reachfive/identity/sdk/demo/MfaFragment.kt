@@ -20,6 +20,7 @@ import co.reachfive.identity.sdk.core.models.CredentialMfaType
 import co.reachfive.identity.sdk.core.models.ReachFiveError
 import co.reachfive.identity.sdk.core.models.SdkConfig
 import co.reachfive.identity.sdk.core.models.responses.MfaCredential
+import co.reachfive.identity.sdk.core.models.responses.TrustedDevice
 
 class MfaFragment(private val reach5: ReachFive,
                   private var authToken: AuthToken,
@@ -31,11 +32,30 @@ class MfaFragment(private val reach5: ReachFive,
     private lateinit var mfaCredentialsAdapter: MfaCredentialsAdapter
     private var mfaCredentials: List<MfaCredential> = listOf()
 
+    private lateinit var trustedDevicesAdapter: TrustedDevicesAdapter
+    private var trustedDevices: List<TrustedDevice> = listOf()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.mfa_fragment, container, false)
+        trustedDevicesAdapter = TrustedDevicesAdapter(requireContext(), this.trustedDevices, object: ButtonTrustedDeviceCallback{
+            override fun removeCredentialCallback(position: Int) {
+                val trustedDevice = trustedDevicesAdapter.getItem(position)
+                reach5.removeMfaTrustedDevice(authToken, trustedDevice.id,
+                    success = {
+                        showToast("Removed MFA trusted device successfully")
+                        refreshTrustedDevicesDisplayed()
+                    },
+                    failure = {
+                        Log.d(TAG, "Removed trusted device error = $it")
+                        showErrorToast(it)
+                    }
+                )
+            }
+        })
+        view.findViewById<ListView>(R.id.trustedDevices).adapter = trustedDevicesAdapter
         mfaCredentialsAdapter = MfaCredentialsAdapter(requireContext(), this.mfaCredentials, object: ButtonCredentialCallback {
             override fun removeCredentialCallback(position: Int) {
                 val credential = mfaCredentialsAdapter.getItem(position)
@@ -150,6 +170,7 @@ class MfaFragment(private val reach5: ReachFive,
                             success = {
                                 authToken = it
                                 showToast("MFA step up completed")
+                                refreshTrustedDevicesDisplayed()
                             },
                             failure = {
                                 showErrorToast(it)
@@ -167,7 +188,6 @@ class MfaFragment(private val reach5: ReachFive,
         }
 
         refreshMfaCredentialsDisplayed()
-
         return view
     }
     private fun showToast(message: String) {
@@ -182,6 +202,20 @@ class MfaFragment(private val reach5: ReachFive,
         )
     }
 
+    private fun refreshTrustedDevicesDisplayed() {
+        reach5.listMfaTrustedDevices(
+            authToken = authToken,
+            success = {
+                this.trustedDevices = it.trustedDevices
+                Log.d(TAG, "listMfaTrustedDevices ${this.trustedDevices}")
+                this.trustedDevicesAdapter.refresh(this.trustedDevices)
+            },
+            failure = {
+                Log.d(TAG, "listMfaTrustedDevices error=$it")
+                showErrorToast(it)
+            }
+        )
+    }
     private fun refreshMfaCredentialsDisplayed() {
         reach5.listMfaCredentials(
             authToken = authToken,
