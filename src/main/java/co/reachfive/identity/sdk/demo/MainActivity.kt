@@ -213,14 +213,14 @@ class MainActivity : AppCompatActivity() {
                 success = {
                     if(it.stepUpToken != null) {
                         Log.d(TAG, "INSIDE STEP UP TOKEN")
-                        var linearLayout = LinearLayout(this)
+                        val linearLayout = LinearLayout(this)
                         val checkboxAuthTypeSMS = CheckBox(this)
                         checkboxAuthTypeSMS.text = "SMS"
                         val checkboxAuthTypeEmail = CheckBox(this)
                         checkboxAuthTypeEmail.text = "Email"
                         linearLayout.addView(checkboxAuthTypeEmail)
                         linearLayout.addView(checkboxAuthTypeSMS)
-                        var alert = androidx.appcompat.app.AlertDialog.Builder(this)
+                        val alert = androidx.appcompat.app.AlertDialog.Builder(this)
                         alert.setTitle("Mfa auth type")
                         alert.setMessage("Choose your mfa auth type")
                         alert.setView(linearLayout)
@@ -238,7 +238,7 @@ class MainActivity : AppCompatActivity() {
                                 scope = assignedScope,
                                 success = {
                                     val verificationCodeTextView = EditText(this)
-                                    var alertEndStepUp = androidx.appcompat.app.AlertDialog.Builder(this);
+                                    val alertEndStepUp = androidx.appcompat.app.AlertDialog.Builder(this);
                                     alertEndStepUp.setTitle("Step up")
                                     alertEndStepUp.setMessage("Please enter the code you received by $secondFactorType")
                                     alertEndStepUp.setView(verificationCodeTextView)
