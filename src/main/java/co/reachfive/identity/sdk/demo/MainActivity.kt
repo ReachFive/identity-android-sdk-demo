@@ -223,11 +223,11 @@ class MainActivity : AppCompatActivity() {
                         alert.setTitle("Mfa auth type")
                         alert.setMessage("Choose your mfa auth type")
                         alert.setView(linearLayout)
-                        alert.setPositiveButton("Start Step up", DialogInterface.OnClickListener{ dialog: DialogInterface, which: Int ->
+                        alert.setPositiveButton("Start Step up") { dialog: DialogInterface, which: Int ->
                             val secondFactorType =
-                                if(checkboxAuthTypeSMS.isChecked)
+                                if (checkboxAuthTypeSMS.isChecked)
                                     CredentialMfaType.sms
-                                else if(checkboxAuthTypeEmail.isChecked)
+                                else if (checkboxAuthTypeEmail.isChecked)
                                     CredentialMfaType.email
                                 else CredentialMfaType.email
                             this.reach5.startStepUp(
@@ -237,11 +237,14 @@ class MainActivity : AppCompatActivity() {
                                 scope = assignedScope,
                                 success = {
                                     val verificationCodeTextView = EditText(this)
-                                    val alertEndStepUp = androidx.appcompat.app.AlertDialog.Builder(this)
+                                    val alertEndStepUp =
+                                        androidx.appcompat.app.AlertDialog.Builder(this)
                                     alertEndStepUp.setTitle("Step up")
                                     alertEndStepUp.setMessage("Please enter the code you received by $secondFactorType")
                                     alertEndStepUp.setView(verificationCodeTextView)
-                                    alertEndStepUp.setPositiveButton("Complete step up", DialogInterface.OnClickListener { dialog: DialogInterface, which: Int ->
+                                    alertEndStepUp.setPositiveButton(
+                                        "Complete step up"
+                                    ) { dialog: DialogInterface, which: Int ->
                                         this.reach5.endStepUp(
                                             challengeId = it.challengeId,
                                             trustDevice = true,
@@ -253,8 +256,9 @@ class MainActivity : AppCompatActivity() {
                                             failure = {
                                                 showErrorToast(it)
                                             },
-                                            activity = this)
-                                    })
+                                            activity = this
+                                        )
+                                    }
                                     alertEndStepUp.show()
                                     showToast("MFA step up started")
                                 },
@@ -263,8 +267,8 @@ class MainActivity : AppCompatActivity() {
                                     showErrorToast(it)
                                 },
                                 activity = this,
-                                )
-                        })
+                            )
+                        }
                         alert.show()
                     } else {
                         handleLoginSuccess(it)
