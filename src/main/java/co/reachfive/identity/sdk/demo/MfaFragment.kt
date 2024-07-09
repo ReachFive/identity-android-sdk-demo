@@ -154,12 +154,12 @@ class MfaFragment(private val reach5: ReachFive,
             val authType = if(view.findViewById<RadioButton>(R.id.emailCredentialType).isChecked) CredentialMfaType.email else CredentialMfaType.sms
             this.reach5.startStepUp(
                 authToken,
-                authType,
+                authType = authType,
                 scope = assignedScope,
                 redirectUri = sdkConfig.scheme,
                 success = {
                     val verificationCodeTextView = EditText(context)
-                    var alert = androidx.appcompat.app.AlertDialog.Builder(requireContext());
+                    val alert = androidx.appcompat.app.AlertDialog.Builder(requireContext())
                     alert.setTitle("Step up")
                     alert.setMessage("Please enter the code you received by $authType")
                     alert.setView(verificationCodeTextView)
@@ -186,7 +186,7 @@ class MfaFragment(private val reach5: ReachFive,
                 },
                 activity = anchor)
         }
-
+        refreshTrustedDevicesDisplayed()
         refreshMfaCredentialsDisplayed()
         return view
     }
