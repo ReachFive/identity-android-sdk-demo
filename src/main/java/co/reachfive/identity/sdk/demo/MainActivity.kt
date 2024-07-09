@@ -12,7 +12,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import co.reachfive.identity.sdk.core.LoginResultHandler
 import co.reachfive.identity.sdk.core.ReachFive
 import co.reachfive.identity.sdk.core.models.AuthToken
