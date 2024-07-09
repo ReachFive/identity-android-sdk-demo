@@ -238,7 +238,7 @@ class MainActivity : AppCompatActivity() {
                                 scope = assignedScope,
                                 success = {
                                     val verificationCodeTextView = EditText(this)
-                                    val alertEndStepUp = androidx.appcompat.app.AlertDialog.Builder(this);
+                                    val alertEndStepUp = androidx.appcompat.app.AlertDialog.Builder(this)
                                     alertEndStepUp.setTitle("Step up")
                                     alertEndStepUp.setMessage("Please enter the code you received by $secondFactorType")
                                     alertEndStepUp.setView(verificationCodeTextView)
