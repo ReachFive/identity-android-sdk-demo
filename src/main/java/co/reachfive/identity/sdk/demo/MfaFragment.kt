@@ -19,6 +19,7 @@ import co.reachfive.identity.sdk.core.models.AuthToken
 import co.reachfive.identity.sdk.core.models.CredentialMfaType
 import co.reachfive.identity.sdk.core.models.ReachFiveError
 import co.reachfive.identity.sdk.core.models.SdkConfig
+import co.reachfive.identity.sdk.core.models.requests.StartStepUpAuthTokenFlow
 import co.reachfive.identity.sdk.core.models.responses.MfaCredential
 import co.reachfive.identity.sdk.core.models.responses.TrustedDevice
 
@@ -153,7 +154,7 @@ class MfaFragment(private val reach5: ReachFive,
         view.findViewById<Button>(R.id.startMfaStepUp).setOnClickListener {
             val authType = if(view.findViewById<RadioButton>(R.id.emailCredentialType).isChecked) CredentialMfaType.email else CredentialMfaType.sms
             this.reach5.startStepUp(
-                authToken,
+                startStepUpFlow = StartStepUpAuthTokenFlow(authToken = authToken, activity = anchor),
                 authType = authType,
                 scope = assignedScope,
                 redirectUri = sdkConfig.scheme,
@@ -183,8 +184,7 @@ class MfaFragment(private val reach5: ReachFive,
                 failure = {
                     Log.d(TAG, "mfa start step up error = $it")
                     showErrorToast(it)
-                },
-                activity = anchor)
+                })
         }
         refreshTrustedDevicesDisplayed()
         refreshMfaCredentialsDisplayed()

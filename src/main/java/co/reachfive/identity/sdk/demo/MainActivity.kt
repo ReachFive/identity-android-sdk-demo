@@ -18,8 +18,10 @@ import co.reachfive.identity.sdk.core.models.AuthToken
 import co.reachfive.identity.sdk.core.models.CredentialMfaType
 import co.reachfive.identity.sdk.core.models.ReachFiveError
 import co.reachfive.identity.sdk.core.models.SdkConfig
+import co.reachfive.identity.sdk.core.models.requests.LoginMfaConf
 import co.reachfive.identity.sdk.core.models.requests.ProfileSignupRequest
 import co.reachfive.identity.sdk.core.models.requests.ProfileWebAuthnSignupRequest
+import co.reachfive.identity.sdk.core.models.requests.StartStepUpLoginFlow
 import co.reachfive.identity.sdk.core.models.requests.webAuthn.WebAuthnLoginRequest
 import co.reachfive.identity.sdk.demo.AuthenticatedActivity.Companion.AUTH_TOKEN
 import co.reachfive.identity.sdk.demo.AuthenticatedActivity.Companion.SDK_CONFIG
@@ -207,11 +209,9 @@ class MainActivity : AppCompatActivity() {
                 customIdentifier = customIdentifierPwd(),
                 password = passwordValue(),
                 scope = assignedScope,
-                activity = this,
-                redirectUrl = sdkConfig.scheme,
+                mfaConf = LoginMfaConf(activity = this, redirectUri = sdkConfig.scheme),
                 success = {
                     if(it.stepUpToken != null) {
-                        Log.d(TAG, "INSIDE STEP UP TOKEN")
                         val linearLayout = LinearLayout(this)
                         val checkboxAuthTypeSMS = CheckBox(this)
                         checkboxAuthTypeSMS.text = "SMS"
@@ -231,7 +231,7 @@ class MainActivity : AppCompatActivity() {
                                     CredentialMfaType.email
                                 else CredentialMfaType.email
                             this.reach5.startStepUp(
-                                stepUpToken = it.stepUpToken,
+                                startStepUpFlow = StartStepUpLoginFlow(stepUpToken = it.stepUpToken!!),
                                 authType = secondFactorType,
                                 redirectUri = sdkConfig.scheme,
                                 scope = assignedScope,
@@ -266,7 +266,6 @@ class MainActivity : AppCompatActivity() {
                                     Log.d(TAG, "mfa start step up error = $it")
                                     showErrorToast(it)
                                 },
-                                activity = this,
                             )
                         }
                         alert.show()
