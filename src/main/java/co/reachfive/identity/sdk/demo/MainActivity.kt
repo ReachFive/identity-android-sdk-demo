@@ -1,20 +1,27 @@
 package co.reachfive.identity.sdk.demo
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.CheckBox
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import co.reachfive.identity.sdk.core.LoginResultHandler
 import co.reachfive.identity.sdk.core.ReachFive
 import co.reachfive.identity.sdk.core.models.AuthToken
+import co.reachfive.identity.sdk.core.models.CredentialMfaType
 import co.reachfive.identity.sdk.core.models.ReachFiveError
 import co.reachfive.identity.sdk.core.models.SdkConfig
+import co.reachfive.identity.sdk.core.models.requests.LoginMfaConf
 import co.reachfive.identity.sdk.core.models.requests.ProfileSignupRequest
 import co.reachfive.identity.sdk.core.models.requests.ProfileWebAuthnSignupRequest
+import co.reachfive.identity.sdk.core.models.requests.StartStepUpLoginFlow
 import co.reachfive.identity.sdk.core.models.requests.webAuthn.WebAuthnLoginRequest
 import co.reachfive.identity.sdk.demo.AuthenticatedActivity.Companion.AUTH_TOKEN
 import co.reachfive.identity.sdk.demo.AuthenticatedActivity.Companion.SDK_CONFIG
@@ -202,7 +209,70 @@ class MainActivity : AppCompatActivity() {
                 customIdentifier = customIdentifierPwd(),
                 password = passwordValue(),
                 scope = assignedScope,
-                success = { handleLoginSuccess(it) },
+                mfaConf = LoginMfaConf(activity = this, redirectUri = sdkConfig.scheme),
+                success = {
+                    if(it.stepUpToken != null) {
+                        val linearLayout = LinearLayout(this)
+                        val checkboxAuthTypeSMS = CheckBox(this)
+                        checkboxAuthTypeSMS.text = "SMS"
+                        val checkboxAuthTypeEmail = CheckBox(this)
+                        checkboxAuthTypeEmail.text = "Email"
+                        linearLayout.addView(checkboxAuthTypeEmail)
+                        linearLayout.addView(checkboxAuthTypeSMS)
+                        val alert = androidx.appcompat.app.AlertDialog.Builder(this)
+                        alert.setTitle("Mfa auth type")
+                        alert.setMessage("Choose your mfa auth type")
+                        alert.setView(linearLayout)
+                        alert.setPositiveButton("Start Step up") { dialog: DialogInterface, which: Int ->
+                            val secondFactorType =
+                                if (checkboxAuthTypeSMS.isChecked)
+                                    CredentialMfaType.sms
+                                else if (checkboxAuthTypeEmail.isChecked)
+                                    CredentialMfaType.email
+                                else CredentialMfaType.email
+                            this.reach5.startStepUp(
+                                startStepUpFlow = StartStepUpLoginFlow(stepUpToken = it.stepUpToken!!),
+                                authType = secondFactorType,
+                                redirectUri = sdkConfig.scheme,
+                                scope = assignedScope,
+                                success = {
+                                    val verificationCodeTextView = EditText(this)
+                                    val alertEndStepUp =
+                                        androidx.appcompat.app.AlertDialog.Builder(this)
+                                    alertEndStepUp.setTitle("Step up")
+                                    alertEndStepUp.setMessage("Please enter the code you received by $secondFactorType")
+                                    alertEndStepUp.setView(verificationCodeTextView)
+                                    alertEndStepUp.setPositiveButton(
+                                        "Complete step up"
+                                    ) { dialog: DialogInterface, which: Int ->
+                                        this.reach5.endStepUp(
+                                            challengeId = it.challengeId,
+                                            trustDevice = true,
+                                            verificationCode = verificationCodeTextView.text.toString(),
+                                            success = {
+                                                handleLoginSuccess(it)
+                                                showToast("MFA step up completed")
+                                            },
+                                            failure = {
+                                                showErrorToast(it)
+                                            },
+                                            activity = this
+                                        )
+                                    }
+                                    alertEndStepUp.show()
+                                    showToast("MFA step up started")
+                                },
+                                failure = {
+                                    Log.d(TAG, "mfa start step up error = $it")
+                                    showErrorToast(it)
+                                },
+                            )
+                        }
+                        alert.show()
+                    } else {
+                        handleLoginSuccess(it)
+                    }
+                },
                 failure = {
                     Log.d(TAG, "loginWithPassword error=$it")
                     showErrorToast(it)
