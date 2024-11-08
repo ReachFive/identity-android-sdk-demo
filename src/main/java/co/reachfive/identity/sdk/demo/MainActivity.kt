@@ -147,12 +147,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        mainActivityBinding.webviewLogout.setOnClickListener {
-            val intent = Intent(this, WebviewActivity::class.java)
-            intent.data = Uri.parse("https://$domain/identity/v1/logout")
-            startActivity(intent)
-        }
-
         val redirectUrlBinding = passwordAuthBinding.redirectUrl
         val emailPwdBinding = passwordAuthBinding.email
         fun emailPwd() = emailPwdBinding.text.toString().let {

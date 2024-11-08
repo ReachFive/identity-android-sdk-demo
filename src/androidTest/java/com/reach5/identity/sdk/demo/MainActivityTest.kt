@@ -483,7 +483,7 @@ class MainActivityTest {
             profile,
             scope,
             redirectUrl = null,
-            { authToken ->
+            success = { authToken ->
                 client.updateEmail(
                     authToken,
                     newEmail,
@@ -495,7 +495,7 @@ class MainActivityTest {
                     failure = { failWithReachFiveError(it) }
                 )
             },
-            { failWithReachFiveError(it) }
+            failure = { failWithReachFiveError(it) }
         )
     }
 
@@ -508,7 +508,7 @@ class MainActivityTest {
             profile,
             scope,
             redirectUrl = null,
-            { authToken ->
+            success = { authToken ->
                 client.updateEmail(
                     authToken,
                     profile.email!!,
@@ -521,7 +521,7 @@ class MainActivityTest {
                     }
                 )
             },
-            { failWithReachFiveError(it) }
+            failure = { failWithReachFiveError(it) }
         )
     }
 
@@ -562,7 +562,7 @@ class MainActivityTest {
             profile,
             scope,
             redirectUrl = null,
-            { authToken ->
+            success = { authToken ->
                 client.updatePhoneNumber(
                     authToken,
                     newNumber,
@@ -574,7 +574,7 @@ class MainActivityTest {
                     failure = { failWithReachFiveError(it) }
                 )
             },
-            { failWithReachFiveError(it) }
+            failure = { failWithReachFiveError(it) }
         )
     }
 
@@ -587,7 +587,7 @@ class MainActivityTest {
             profile,
             scope,
             redirectUrl = null,
-            { authToken ->
+            success = { authToken ->
                 client.updatePhoneNumber(
                     authToken,
                     profile.phoneNumber!!,
@@ -599,7 +599,7 @@ class MainActivityTest {
                     failure = { failWithReachFiveError(it) }
                 )
             },
-            { failWithReachFiveError(it) }
+            failure = { failWithReachFiveError(it) }
         )
     }
 
@@ -641,7 +641,7 @@ class MainActivityTest {
             theProfile,
             scope,
             redirectUrl = null,
-            { authToken ->
+            success = { authToken ->
                 client
                     .updateProfile(
                         authToken,
@@ -657,7 +657,7 @@ class MainActivityTest {
                         { failWithReachFiveError(it) }
                     )
             },
-            { failWithReachFiveError(it) }
+            failure = { failWithReachFiveError(it) }
         )
     }
 
@@ -698,7 +698,7 @@ class MainActivityTest {
             profile,
             scope,
             redirectUrl = null,
-            { authToken ->
+            success = { authToken ->
                 client.updatePassword(
                     UpdatePasswordRequest.FreshAccessTokenParams(authToken, newPassword),
                     success = {
@@ -712,7 +712,7 @@ class MainActivityTest {
                     failure = { failWithReachFiveError(it) }
                 )
             },
-            { failWithReachFiveError(it) }
+            failure = { failWithReachFiveError(it) }
         )
     }
 
@@ -726,7 +726,7 @@ class MainActivityTest {
             profile,
             scope,
             redirectUrl = null,
-            { authToken ->
+            success = { authToken ->
                 client.updatePassword(
                     UpdatePasswordRequest.AccessTokenParams(
                         authToken,
@@ -744,7 +744,7 @@ class MainActivityTest {
                     failure = { failWithReachFiveError(it) }
                 )
             },
-            { failWithReachFiveError(it) }
+            failure = { failWithReachFiveError(it) }
         )
     }
 
@@ -757,7 +757,7 @@ class MainActivityTest {
             profile,
             scope,
             redirectUrl = null,
-            { authToken ->
+            success = { authToken ->
                 client.updatePassword(
                     UpdatePasswordRequest.AccessTokenParams(
                         authToken,
@@ -775,7 +775,7 @@ class MainActivityTest {
                     }
                 )
             },
-            { failWithReachFiveError(it) }
+            failure = { failWithReachFiveError(it) }
         )
     }
 
@@ -789,7 +789,7 @@ class MainActivityTest {
             profile,
             scope,
             redirectUrl = null,
-            {
+            success = {
                 client.updatePassword(
                     UpdatePasswordRequest.EmailParams(
                         profile.email!!,
@@ -804,7 +804,7 @@ class MainActivityTest {
                     }
                 )
             },
-            { failWithReachFiveError(it) }
+            failure = { failWithReachFiveError(it) }
         )
     }
 
@@ -818,7 +818,7 @@ class MainActivityTest {
             profile,
             scope,
             redirectUrl = null,
-            {
+            success = {
                 client.updatePassword(
                     UpdatePasswordRequest.SmsParams(
                         profile.phoneNumber!!,
@@ -833,7 +833,7 @@ class MainActivityTest {
                     }
                 )
             },
-            { failWithReachFiveError(it) }
+            failure = { failWithReachFiveError(it) }
         )
     }
 

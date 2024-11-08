@@ -17,7 +17,7 @@
     <string name="login_web">Login with Web</string>
     <string name="login_webview">Login with WebView</string>
     <string name="webview_sso_data">Webview SSO data</string>
-    <string name="webview_logout">Webview logout</string>
+    <string name="native_logout">Logout WebView + Revoke Tokens</string>
     <string name="login">Login</string>
     <string name="login_with_passkey">Login with Passkey</string>
     <string name="discoverable_login">Discoverable login</string>
@@ -45,6 +45,7 @@
     <string name="tkn">Token</string>
     <string name="verify_mfa_email_registration">Verify email mfa</string>
     <string name="verify_mfa_phone_number_registration">Verify Phone number mfa</string>
+    <string name="customtab_logout">Native + CustomTab logout</string>
 
     <string name="facebook_app_id">1634029666893228</string>
     <string name="facebook_client_token">1a774a90e2e5ec97b21afcd93ce69909</string>

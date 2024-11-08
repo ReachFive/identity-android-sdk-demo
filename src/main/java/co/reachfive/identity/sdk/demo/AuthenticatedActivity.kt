@@ -92,11 +92,46 @@ class AuthenticatedActivity : AppCompatActivity() {
         val phoneNumberTextView = findViewById<View>(R.id.user_phone_number) as TextView
         phoneNumberTextView.text = this.authToken.user?.phoneNumber
 
+        authenticatedActivityBinding.logoutNative.setOnClickListener {
+            Log.d("AuthenticatedActivity", "Logging out from WebView")
+            Log.d(
+                "AuthenticatedActivity",
+                "Logging out from tokens\n${this.authToken.accessToken}\n${this.authToken.refreshToken}"
+            )
+            reach5.logout({
+                Log.d("AuthenticatedActivity", "Logged out from WebView")
+                Log.d("AuthenticatedActivity", "Logged out from tokens")
+                showToast("Tokens revoked, WebView SSO killed")
+            }, { showErrorToast(it) }, tokens = this.authToken)
+        }
+
+        authenticatedActivityBinding.logoutCustomTab.setOnClickListener {
+            Log.d("AuthenticatedActivity", "Logging out from WebView")
+            Log.d("AuthenticatedActivity", "Logging out from CustomTab")
+            reach5.logout({
+                Log.d("AuthenticatedActivity", "Logged out from WebView")
+                Log.d("AuthenticatedActivity", "Logged out from CustomTab")
+                showToast("CustomTab SSO killed")
+            }, { showErrorToast(it) }, ssoCustomTab = this)
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        webauthnFragment.onWebauthnAddingDevice(requestCode, resultCode, data)
+        if (reach5.isReachFiveActionRequestCode(requestCode))
+            webauthnFragment.onWebauthnAddingDevice(requestCode, resultCode, data)
+        else if (reach5.isReachFiveLogoutRequestCode(requestCode)) {
+            Log.d(TAG, "Received logout request code")
+            reach5.onLogoutResult(requestCode, data, {
+                Log.d(TAG, "Return from logout custom tab")
+                showToast("Exiting authenticated activity")
+                finish()
+            }, {
+                Log.d(TAG, "Error returning from logout custom tab")
+                showErrorToast(it) })
+        } else
+            Log.d(TAG, "Unexpected request code: $requestCode")
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
