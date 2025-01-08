@@ -15,6 +15,7 @@ import co.reachfive.identity.sdk.core.models.AuthToken
 import co.reachfive.identity.sdk.core.models.ReachFiveError
 import co.reachfive.identity.sdk.core.models.SdkConfig
 import co.reachfive.identity.sdk.demo.databinding.ActivityAuthenticatedBinding
+import co.reachfive.identity.sdk.google.GoogleProvider
 import com.google.android.material.tabs.TabLayout
 import io.github.cdimascio.dotenv.dotenv
 
@@ -63,7 +64,14 @@ class AuthenticatedActivity : AppCompatActivity() {
         val sdkConfig = intent.getParcelableExtra<SdkConfig>(SDK_CONFIG)!!
         this.reach5 = ReachFive(
             sdkConfig = sdkConfig,
-            providersCreators = listOf(),
+            // Load providers so that they get proper logout, only useful for Google at the moment.
+            providersCreators = listOf(GoogleProvider()),
+        )
+
+        reach5.loadSocialProviders(
+            this,
+            success = { Log.d(TAG, "loaded providers ${it.map { it.name }.joinToString(",")}") },
+            failure = { Log.d(TAG, "Loading providers failed ${it.message}") }
         )
 
         authenticatedActivityBinding = ActivityAuthenticatedBinding.inflate(layoutInflater)
@@ -76,7 +84,10 @@ class AuthenticatedActivity : AppCompatActivity() {
 
         webauthnFragment = WebauthnFragment(reach5, authToken, origin, this)
         fragmentAdapter = AuthenticatedActivityPagerAdapter(supportFragmentManager)
-        fragmentAdapter.addFragment(MfaFragment(reach5, authToken, assignedScope, sdkConfig,this), "MFA")
+        fragmentAdapter.addFragment(
+            MfaFragment(reach5, authToken, assignedScope, sdkConfig, this),
+            "MFA"
+        )
         fragmentAdapter.addFragment(webauthnFragment, "webauthn")
         viewPager.adapter = fragmentAdapter
 
@@ -129,7 +140,8 @@ class AuthenticatedActivity : AppCompatActivity() {
                 finish()
             }, {
                 Log.d(TAG, "Error returning from logout custom tab")
-                showErrorToast(it) })
+                showErrorToast(it)
+            })
         } else
             Log.d(TAG, "Unexpected request code: $requestCode")
     }
@@ -142,6 +154,7 @@ class AuthenticatedActivity : AppCompatActivity() {
                 finish()
                 true
             }
+
             else -> {
                 super.onOptionsItemSelected(item)
             }

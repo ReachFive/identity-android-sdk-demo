@@ -6,9 +6,9 @@ def ext = rootProject.ext
 
 buildscript {
     ext {
-        sdkVersion = "9.4.0"
+        sdkVersion = "9.5.0"
 
-        kotlin_version = "1.7.10"
+        kotlin_version = "1.9.25"
         kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
         androidSettings = [
@@ -27,7 +27,7 @@ buildscript {
     dependencies {
         classpath "com.github.ben-manes:gradle-versions-plugin:0.42.0"
 
-        classpath 'com.android.tools.build:gradle:8.7.0'
+        classpath 'com.android.tools.build:gradle:8.7.3'
         classpath "com.google.gms:google-services:4.3.13"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
@@ -81,8 +81,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = "1.8"
-        targetCompatibility = "1.8"
+        sourceCompatibility = 21
+        targetCompatibility = 21
     }
 
     testOptions {
@@ -105,7 +105,7 @@ repositories {
     mavenCentral()
     maven {
         url "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-        mavenContent{
+        mavenContent {
             snapshotsOnly()
         }
     }
