@@ -540,7 +540,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleLoginSuccess(authToken: AuthToken) {
         try {
-            val intent = Intent(this, AuthenticatedActivity::class.java)
+            val intent: Intent
+            if (!authToken.stepUpToken.isNullOrEmpty()){
+                intent = Intent(this, StepUpActivity::class.java)
+            } else {
+                intent = Intent(this, AuthenticatedActivity::class.java)
+            }
             intent.putExtra(AUTH_TOKEN, authToken)
             intent.putExtra(SDK_CONFIG, sdkConfig)
 

@@ -1,13 +1,16 @@
 package co.reachfive.identity.sdk.demo
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import co.reachfive.identity.sdk.core.ReachFive
@@ -35,6 +38,8 @@ class AuthenticatedActivity : AppCompatActivity() {
 
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager
+
+    private lateinit var alertEmailVerification: AlertDialog
 
     private lateinit var authenticatedActivityBinding: ActivityAuthenticatedBinding
 
@@ -126,6 +131,37 @@ class AuthenticatedActivity : AppCompatActivity() {
             }, { showErrorToast(it) }, ssoCustomTab = this)
         }
 
+        authenticatedActivityBinding.sendEmailVerification.setOnClickListener {
+            this.reach5
+                .sendEmailVerification(
+                    authToken = authToken,
+                    redirectUrl = "reachfive://" + sdkConfig.clientId + "/verify-email",
+                    success = {
+                        val verificationCodeTextView = EditText(this.baseContext)
+                        val alert  = androidx.appcompat.app.AlertDialog.Builder(this);
+                        alert.setTitle("Verify Email")
+                        alert.setMessage("Please enter the code you received by Email")
+                        alert.setView(verificationCodeTextView)
+                        alert.setPositiveButton("Verify Email", DialogInterface.OnClickListener { dialog: DialogInterface, which: Int ->
+                            this.reach5.verifyEmail(
+                                authToken = authToken,
+                                email = this.authToken.user?.email!!,
+                                verificationCode = verificationCodeTextView.text.toString(),
+                                success = {
+                                    showToast("Successfully verified Email")
+                                },
+                                failure = {
+                                    Log.d(TAG, "error=$it")
+                                })
+                        })
+
+                        alertEmailVerification = alert.show()
+                    },
+                    failure = {
+
+                    })
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -144,6 +180,15 @@ class AuthenticatedActivity : AppCompatActivity() {
             })
         } else
             Log.d(TAG, "Unexpected request code: $requestCode")
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val path = intent.data?.path
+        if(!path.isNullOrEmpty() && path.contains("/verify-email")) {
+            alertEmailVerification.cancel()
+            showToast("Successful email verification")
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -31,11 +31,31 @@
                 android:exported="true">
         </activity>
 
+        <activity android:name="co.reachfive.identity.sdk.demo.StepUpActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="adjustPan"
+            android:exported="true" />
+
         <activity
             android:name="co.reachfive.identity.sdk.demo.AuthenticatedActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
-            android:exported="true"/>
+            android:launchMode="singleInstance"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/reachfive_client_id"
+                    android:pathPrefix="/verify-email"
+                    android:scheme="@string/reachfive_scheme"
+                    tools:ignore="AppLinkUrlError" />
+            </intent-filter>
+        </activity>
+
 
         <activity
                 android:name="co.reachfive.identity.sdk.core.RedirectionActivity"
