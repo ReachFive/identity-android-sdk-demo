@@ -137,25 +137,30 @@ class AuthenticatedActivity : AppCompatActivity() {
                     authToken = authToken,
                     redirectUrl = "reachfive://" + sdkConfig.clientId + "/verify-email",
                     success = {
-                        val verificationCodeTextView = EditText(this.baseContext)
-                        val alert  = androidx.appcompat.app.AlertDialog.Builder(this);
-                        alert.setTitle("Verify Email")
-                        alert.setMessage("Please enter the code you received by Email")
-                        alert.setView(verificationCodeTextView)
-                        alert.setPositiveButton("Verify Email", DialogInterface.OnClickListener { dialog: DialogInterface, which: Int ->
-                            this.reach5.verifyEmail(
-                                authToken = authToken,
-                                email = this.authToken.user?.email!!,
-                                verificationCode = verificationCodeTextView.text.toString(),
-                                success = {
-                                    showToast("Successfully verified Email")
-                                },
-                                failure = {
-                                    Log.d(TAG, "error=$it")
-                                })
-                        })
+                        if(it.verificationEmailSent) {
+                            val verificationCodeTextView = EditText(this.baseContext)
+                            val alert  = androidx.appcompat.app.AlertDialog.Builder(this);
+                            alert.setTitle("Verify Email")
+                            alert.setMessage("Please enter the code you received by Email")
+                            alert.setView(verificationCodeTextView)
+                            alert.setPositiveButton("Verify Email", DialogInterface.OnClickListener { dialog: DialogInterface, which: Int ->
+                                this.reach5.verifyEmail(
+                                    authToken = authToken,
+                                    email = this.authToken.user?.email!!,
+                                    verificationCode = verificationCodeTextView.text.toString(),
+                                    success = {
+                                        showToast("Successfully verified Email")
+                                    },
+                                    failure = {
+                                        Log.d(TAG, "error=$it")
+                                    })
+                            })
 
-                        alertEmailVerification = alert.show()
+                            alertEmailVerification = alert.show()
+                        }
+                        else {
+                            showToast("Email already verified")
+                        }
                     },
                     failure = {
 
