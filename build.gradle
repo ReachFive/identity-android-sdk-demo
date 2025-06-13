@@ -6,7 +6,7 @@ def ext = rootProject.ext
 
 buildscript {
     ext {
-        sdkVersion = "9.5.0"
+        sdkVersion = "9.9.0"
 
         kotlin_version = "1.9.25"
         kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -104,7 +104,8 @@ repositories {
     google()
     mavenCentral()
     maven {
-        url "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+        name = "Central Portal Snapshots"
+        url = "https://central.sonatype.com/repository/maven-snapshots/"
         mavenContent {
             snapshotsOnly()
         }
