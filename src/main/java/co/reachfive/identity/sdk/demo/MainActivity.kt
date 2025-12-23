@@ -23,6 +23,7 @@ import co.reachfive.identity.sdk.core.models.requests.ProfileSignupRequest
 import co.reachfive.identity.sdk.core.models.requests.ProfileWebAuthnSignupRequest
 import co.reachfive.identity.sdk.core.models.requests.StartStepUpLoginFlow
 import co.reachfive.identity.sdk.core.models.requests.webAuthn.WebAuthnLoginRequest
+import co.reachfive.identity.sdk.core.models.responses.SignupResponse
 import co.reachfive.identity.sdk.demo.AuthenticatedActivity.Companion.AUTH_TOKEN
 import co.reachfive.identity.sdk.demo.AuthenticatedActivity.Companion.SDK_CONFIG
 import co.reachfive.identity.sdk.demo.databinding.*
@@ -188,7 +189,14 @@ class MainActivity : AppCompatActivity() {
             this.reach5.signup(
                 profile = signupRequest,
                 redirectUrl = redirectUrlBinding.text.toString().ifEmpty { null },
-                success = { handleLoginSuccess(it) },
+                success = {
+                    when(it) {
+                       is SignupResponse.AchievedLogin -> handleLoginSuccess(it.authToken)
+                       is SignupResponse.AwaitingIdentifierVerification -> {
+                           showToast("Signup occurred but awaiting identifier verification")
+                       }
+                    }
+                },
                 failure = {
                     Log.d(TAG, "signup error=$it")
                     showErrorToast(it)

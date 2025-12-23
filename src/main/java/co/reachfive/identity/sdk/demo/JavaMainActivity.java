@@ -23,6 +23,7 @@ import co.reachfive.identity.sdk.core.models.AuthToken;
 import co.reachfive.identity.sdk.core.models.OpenIdUser;
 import co.reachfive.identity.sdk.core.models.SdkConfig;
 import co.reachfive.identity.sdk.core.models.requests.ProfileSignupRequest;
+import co.reachfive.identity.sdk.core.models.responses.SignupResponse;
 import co.reachfive.identity.sdk.facebook.FacebookProvider;
 import co.reachfive.identity.sdk.google.GoogleProvider;
 import co.reachfive.identity.sdk.webview.WebViewProvider;
@@ -103,7 +104,9 @@ public class JavaMainActivity extends AppCompatActivity {
             );
             reach5.signup(
                     signupRequest,
-                    this::handleLoginSuccess,
+                    success -> {
+                        showToast("test");
+                    },
                     failure -> {
                         Log.d(TAG, "signup error=" + failure.getMessage());
                         showToast("Signup With Password Error " + failure.getMessage());
