@@ -6,15 +6,15 @@ def ext = rootProject.ext
 
 buildscript {
     ext {
-        sdkVersion = "10.0.0"
+        sdkVersion = "11.0.0-DEV"
 
         kotlin_version = '2.2.10'
         kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
         androidSettings = [
                 min_sdk_version    : 28,
-                target_sdk_version : 34,
-                compile_sdk_version: 34,
+                target_sdk_version : 36,
+                compile_sdk_version: 36,
                 version_code       : 4
         ]
     }

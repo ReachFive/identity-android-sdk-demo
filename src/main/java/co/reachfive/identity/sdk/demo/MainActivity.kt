@@ -129,7 +129,8 @@ class MainActivity : AppCompatActivity() {
                 state = "state",
                 nonce = "nonce",
                 origin = "origin",
-                activity = this
+                activity = this,
+                useEphemeralBrowsing = mainActivityBinding.ephemeralBrowsing.isChecked
             )
         }
 
