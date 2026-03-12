@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import co.reachfive.identity.sdk.core.LoginResultHandler
 import co.reachfive.identity.sdk.core.ReachFive
+import co.reachfive.identity.sdk.core.RedirectionActivity
 import co.reachfive.identity.sdk.core.models.AuthToken
 import co.reachfive.identity.sdk.core.models.CredentialMfaType
 import co.reachfive.identity.sdk.core.models.ReachFiveError
@@ -90,6 +91,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(mainActivityBinding.root)
         setSupportActionBar(findViewById(R.id.toolbar))
 
+        RedirectionActivity.webViewClientFactory = { activity, codeVerifier ->
+            CustomWebViewClient(activity, codeVerifier)
+        }
 
         val providersCreators =
             listOf(GoogleProvider(), FacebookProvider(), WebViewProvider(), WechatProvider())
