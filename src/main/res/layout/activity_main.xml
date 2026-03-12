@@ -27,7 +27,7 @@
                 android:id="@+id/ephemeral_browsing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Use Ephemeral Browsing for login with web" />
+                android:text="@string/use_ephemeral_browsing" />
 
             <Button
                 android:id="@+id/weblogin"
