@@ -23,6 +23,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <CheckBox
+                android:id="@+id/ephemeral_browsing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/use_ephemeral_browsing" />
+
             <Button
                 android:id="@+id/weblogin"
                 android:layout_width="wrap_content"

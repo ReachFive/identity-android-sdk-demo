@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -23,7 +24,6 @@ import co.reachfive.identity.sdk.core.models.AuthToken;
 import co.reachfive.identity.sdk.core.models.OpenIdUser;
 import co.reachfive.identity.sdk.core.models.SdkConfig;
 import co.reachfive.identity.sdk.core.models.requests.ProfileSignupRequest;
-import co.reachfive.identity.sdk.core.models.responses.SignupResponse;
 import co.reachfive.identity.sdk.facebook.FacebookProvider;
 import co.reachfive.identity.sdk.google.GoogleProvider;
 import co.reachfive.identity.sdk.webview.WebViewProvider;
@@ -74,7 +74,8 @@ public class JavaMainActivity extends AppCompatActivity {
 
         findViewById(R.id.weblogin).setOnClickListener(view -> {
             Set<String> scope = new HashSet<>(Arrays.asList("openid", "email", "profile", "phone_number", "offline_access", "events", "full_write"));
-            reach5.loginWithWeb(scope, "state", "origin",  "nonce", this);
+            CheckBox ephemeralBrowsing = findViewById(R.id.ephemeral_browsing);
+            reach5.loginWithWeb(scope, "state", "origin",  "nonce", this, ephemeralBrowsing.isChecked());
         });
 
         providerAdapter = new ProvidersAdapter(getApplicationContext(), reach5.getProviders());
