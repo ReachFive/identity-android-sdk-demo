@@ -50,6 +50,7 @@ class AuthenticatedActivity : AppCompatActivity() {
         "openid",
         "email",
         "profile",
+        "session",
         "phone_number",
         "offline_access",
         "events",
@@ -94,6 +95,12 @@ class AuthenticatedActivity : AppCompatActivity() {
             "MFA"
         )
         fragmentAdapter.addFragment(webauthnFragment, "webauthn")
+
+        fragmentAdapter.addFragment(
+            SessionDevicesFragment(reach5, authToken),
+            "SESSION DEVICES"
+        )
+
         viewPager.adapter = fragmentAdapter
 
         val givenNameTextView = findViewById<View>(R.id.user_given_name) as TextView
