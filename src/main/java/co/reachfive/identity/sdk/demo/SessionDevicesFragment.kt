@@ -59,7 +59,7 @@ class SessionDevicesFragment(private val reach5: ReachFive, private var authToke
     private fun refreshSessionDevicesDisplayed() {
         reach5.listSessionDevices(authToken,
             success = {
-                this.sessionDevices = it.sessionDevices
+                this.sessionDevices = it
                 Log.d(TAG, "listSessionDevices $sessionDevices")
                 this.sessionDeviceAdapter.refresh(this.sessionDevices)
             },
