@@ -25,7 +25,20 @@ class SessionDevicesFragment(private val reach5: ReachFive, private var authToke
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.session_devices_fragment, container, false)
-        sessionDeviceAdapter = SessionDevicesAdapter(requireContext(), this.sessionDevices)
+        sessionDeviceAdapter = SessionDevicesAdapter(requireContext(), this.sessionDevices, object : ButtonSessionDeviceCallback {
+            override fun removeSessionDeviceCallback(position: Int) {
+                val sessionDevice = sessionDeviceAdapter.getItem(position) as SessionDevice
+                reach5.deleteSessionDevice(sessionDevice.id, authToken,
+                    success = {
+                        Log.d(TAG, "deleteSessionDevice success")
+                        refreshSessionDevicesDisplayed()
+                    },
+                    failure = {
+                        Log.d(TAG, "deleteSessionDevice error $it")
+                        showErrorToast(it)
+                    })
+            }
+        })
         view.findViewById<ListView>(R.id.sessionDevices).adapter = sessionDeviceAdapter
         refreshSessionDevicesDisplayed()
         return view
@@ -46,7 +59,7 @@ class SessionDevicesFragment(private val reach5: ReachFive, private var authToke
     private fun refreshSessionDevicesDisplayed() {
         reach5.listSessionDevices(authToken,
             success = {
-                this.sessionDevices = it.sessionDevices
+                this.sessionDevices = it
                 Log.d(TAG, "listSessionDevices $sessionDevices")
                 this.sessionDeviceAdapter.refresh(this.sessionDevices)
             },

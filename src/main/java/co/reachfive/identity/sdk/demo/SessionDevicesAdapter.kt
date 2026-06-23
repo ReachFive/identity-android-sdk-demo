@@ -5,10 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ImageButton
 import android.widget.TextView
 import co.reachfive.identity.sdk.core.models.responses.SessionDevice
 
-class SessionDevicesAdapter(private val context: Context, private var sessionDevices: List<SessionDevice>): BaseAdapter() {
+interface ButtonSessionDeviceCallback {
+    fun removeSessionDeviceCallback(position: Int)
+}
+
+class SessionDevicesAdapter(private val context: Context, private var sessionDevices: List<SessionDevice>, var callback: ButtonSessionDeviceCallback): BaseAdapter() {
     override fun getCount(): Int {
         return sessionDevices.size
     }
@@ -69,6 +74,11 @@ class SessionDevicesAdapter(private val context: Context, private var sessionDev
         viewHolder.lastConnection?.text = sessionDevice.lastConnection.substring(0, sessionDevice.createdAt.indexOf("."))
         viewHolder.country?.text = sessionDevice.country
         viewHolder.city?.text = sessionDevice.city
+
+        val deleteSessionDeviceButton = view?.findViewById(R.id.removeSessionDevice) as ImageButton
+        deleteSessionDeviceButton.setOnClickListener {
+            callback.removeSessionDeviceCallback(position)
+        }
 
         return view
     }
