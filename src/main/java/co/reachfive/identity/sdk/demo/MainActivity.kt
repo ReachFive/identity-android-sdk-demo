@@ -130,7 +130,8 @@ class MainActivity : AppCompatActivity() {
                 nonce = "nonce",
                 origin = "origin",
                 activity = this,
-                useEphemeralBrowsing = mainActivityBinding.ephemeralBrowsing.isChecked
+                useEphemeralBrowsing = mainActivityBinding.ephemeralBrowsing.isChecked,
+                loginUrlFragment = mapOf("key1" to "value1", "key2" to "value2"),
             )
         }
 
@@ -139,7 +140,8 @@ class MainActivity : AppCompatActivity() {
                 state = "state",
                 nonce = "nonce",
                 origin = "origin",
-                activity = this
+                activity = this,
+                loginUrlFragment = mapOf("key1" to "value1", "key2" to "value2&+"),
             )
         }
 
