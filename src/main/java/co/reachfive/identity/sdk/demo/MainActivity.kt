@@ -25,6 +25,10 @@ import co.reachfive.identity.sdk.core.models.requests.StartStepUpLoginFlow
 import co.reachfive.identity.sdk.core.models.requests.webAuthn.WebAuthnLoginRequest
 import co.reachfive.identity.sdk.core.models.responses.SignupResponse
 import co.reachfive.identity.sdk.demo.AuthenticatedActivity.Companion.AUTH_TOKEN
+import co.reachfive.identity.sdk.core.models.CaptchaToken
+import co.reachfive.identity.sdk.demo.captcha.CaptchaAction
+import co.reachfive.identity.sdk.demo.captcha.CaptchaClient
+import co.reachfive.identity.sdk.demo.captcha.CaptchaConf
 import co.reachfive.identity.sdk.demo.AuthenticatedActivity.Companion.SDK_CONFIG
 import co.reachfive.identity.sdk.demo.databinding.*
 import co.reachfive.identity.sdk.facebook.FacebookProvider
@@ -63,6 +67,15 @@ class MainActivity : AppCompatActivity() {
     private val origin = dotenv["ORIGIN"] ?: ""
 
     private val sdkConfig = SdkConfig(domain, clientId, scheme, origin)
+
+    // Null unless the `env` file names a provider, a site key and a site URL.
+    private val captchaConf = CaptchaConf.of(
+        provider = dotenv["CAPTCHA_PROVIDER"],
+        siteKey = dotenv["CAPTCHA_SITE_KEY"],
+        siteUrl = dotenv["CAPTCHA_SITE_URL"],
+    )
+
+    private val captchaClient by lazy { captchaConf?.let { CaptchaClient(this, it) } }
 
     private val assignedScope = setOf(
         "openid",
@@ -189,100 +202,106 @@ class MainActivity : AppCompatActivity() {
 
             Log.d("Signup", "Password: '${passwordValue()}'")
 
-            this.reach5.signup(
-                profile = signupRequest,
-                redirectUrl = redirectUrlBinding.text.toString().ifEmpty { null },
-                success = {
-                    when(it) {
-                       is SignupResponse.AchievedLogin -> handleLoginSuccess(it.authToken)
-                       is SignupResponse.AwaitingIdentifierVerification -> {
-                           showToast("Signup occurred but awaiting identifier verification")
-                       }
+            withCaptcha(CaptchaAction.SIGNUP) { captcha ->
+                this.reach5.signup(
+                    profile = signupRequest,
+                    redirectUrl = redirectUrlBinding.text.toString().ifEmpty { null },
+                    captcha = captcha,
+                    success = {
+                        when(it) {
+                           is SignupResponse.AchievedLogin -> handleLoginSuccess(it.authToken)
+                           is SignupResponse.AwaitingIdentifierVerification -> {
+                               showToast("Signup occurred but awaiting identifier verification")
+                           }
+                        }
+                    },
+                    failure = {
+                        Log.d(TAG, "signup error=$it")
+                        showErrorToast(it)
                     }
-                },
-                failure = {
-                    Log.d(TAG, "signup error=$it")
-                    showErrorToast(it)
-                }
-            )
+                )
+            }
         }
 
         passwordAuthBinding.passwordLogin.setOnClickListener {
-            this.reach5.loginWithPassword(
-                email = emailPwd(),
-                phoneNumber = phoneNumberPwd(),
-                customIdentifier = customIdentifierPwd(),
-                password = passwordValue(),
-                scope = assignedScope,
-                mfaConf = LoginMfaConf(activity = this, redirectUri = sdkConfig.scheme),
-                success = {
-                    if(it.stepUpToken != null) {
-                        val linearLayout = LinearLayout(this)
-                        val checkboxAuthTypeSMS = CheckBox(this)
-                        checkboxAuthTypeSMS.text = "SMS"
-                        val checkboxAuthTypeEmail = CheckBox(this)
-                        checkboxAuthTypeEmail.text = "Email"
-                        linearLayout.addView(checkboxAuthTypeEmail)
-                        linearLayout.addView(checkboxAuthTypeSMS)
-                        val alert = androidx.appcompat.app.AlertDialog.Builder(this)
-                        alert.setTitle("Mfa auth type")
-                        alert.setMessage("Choose your mfa auth type")
-                        alert.setView(linearLayout)
-                        alert.setPositiveButton("Start Step up") { dialog: DialogInterface, which: Int ->
-                            val secondFactorType =
-                                if (checkboxAuthTypeSMS.isChecked)
-                                    CredentialMfaType.sms
-                                else if (checkboxAuthTypeEmail.isChecked)
-                                    CredentialMfaType.email
-                                else CredentialMfaType.email
-                            this.reach5.startStepUp(
-                                startStepUpFlow = StartStepUpLoginFlow(stepUpToken = it.stepUpToken!!),
-                                authType = secondFactorType,
-                                redirectUri = sdkConfig.scheme,
-                                scope = assignedScope,
-                                success = {
-                                    val verificationCodeTextView = EditText(this)
-                                    val alertEndStepUp =
-                                        androidx.appcompat.app.AlertDialog.Builder(this)
-                                    alertEndStepUp.setTitle("Step up")
-                                    alertEndStepUp.setMessage("Please enter the code you received by $secondFactorType")
-                                    alertEndStepUp.setView(verificationCodeTextView)
-                                    alertEndStepUp.setPositiveButton(
-                                        "Complete step up"
-                                    ) { dialog: DialogInterface, which: Int ->
-                                        this.reach5.endStepUp(
-                                            challengeId = it.challengeId,
-                                            trustDevice = true,
-                                            verificationCode = verificationCodeTextView.text.toString(),
-                                            success = {
-                                                handleLoginSuccess(it)
-                                                showToast("MFA step up completed")
-                                            },
-                                            failure = {
-                                                showErrorToast(it)
-                                            },
-                                            activity = this
-                                        )
-                                    }
-                                    alertEndStepUp.show()
-                                    showToast("MFA step up started")
-                                },
-                                failure = {
-                                    Log.d(TAG, "mfa start step up error = $it")
-                                    showErrorToast(it)
-                                },
-                            )
+            withCaptcha(CaptchaAction.LOGIN) { captcha ->
+                this.reach5.loginWithPassword(
+                    email = emailPwd(),
+                    phoneNumber = phoneNumberPwd(),
+                    customIdentifier = customIdentifierPwd(),
+                    password = passwordValue(),
+                    scope = assignedScope,
+                    mfaConf = LoginMfaConf(activity = this, redirectUri = sdkConfig.scheme),
+                    captcha = captcha,
+                    success = {
+                        if(it.stepUpToken != null) {
+                            val linearLayout = LinearLayout(this)
+                            val checkboxAuthTypeSMS = CheckBox(this)
+                            checkboxAuthTypeSMS.text = "SMS"
+                            val checkboxAuthTypeEmail = CheckBox(this)
+                            checkboxAuthTypeEmail.text = "Email"
+                            linearLayout.addView(checkboxAuthTypeEmail)
+                            linearLayout.addView(checkboxAuthTypeSMS)
+                            val alert = androidx.appcompat.app.AlertDialog.Builder(this)
+                            alert.setTitle("Mfa auth type")
+                            alert.setMessage("Choose your mfa auth type")
+                            alert.setView(linearLayout)
+                            alert.setPositiveButton("Start Step up") { dialog: DialogInterface, which: Int ->
+                                val secondFactorType =
+                                    if (checkboxAuthTypeSMS.isChecked)
+                                        CredentialMfaType.sms
+                                    else if (checkboxAuthTypeEmail.isChecked)
+                                        CredentialMfaType.email
+                                    else CredentialMfaType.email
+                                this.reach5.startStepUp(
+                                    startStepUpFlow = StartStepUpLoginFlow(stepUpToken = it.stepUpToken!!),
+                                    authType = secondFactorType,
+                                    redirectUri = sdkConfig.scheme,
+                                    scope = assignedScope,
+                                    success = {
+                                        val verificationCodeTextView = EditText(this)
+                                        val alertEndStepUp =
+                                            androidx.appcompat.app.AlertDialog.Builder(this)
+                                        alertEndStepUp.setTitle("Step up")
+                                        alertEndStepUp.setMessage("Please enter the code you received by $secondFactorType")
+                                        alertEndStepUp.setView(verificationCodeTextView)
+                                        alertEndStepUp.setPositiveButton(
+                                            "Complete step up"
+                                        ) { dialog: DialogInterface, which: Int ->
+                                            this.reach5.endStepUp(
+                                                challengeId = it.challengeId,
+                                                trustDevice = true,
+                                                verificationCode = verificationCodeTextView.text.toString(),
+                                                success = {
+                                                    handleLoginSuccess(it)
+                                                    showToast("MFA step up completed")
+                                                },
+                                                failure = {
+                                                    showErrorToast(it)
+                                                },
+                                                activity = this
+                                            )
+                                        }
+                                        alertEndStepUp.show()
+                                        showToast("MFA step up started")
+                                    },
+                                    failure = {
+                                        Log.d(TAG, "mfa start step up error = $it")
+                                        showErrorToast(it)
+                                    },
+                                )
+                            }
+                            alert.show()
+                        } else {
+                            handleLoginSuccess(it)
                         }
-                        alert.show()
-                    } else {
-                        handleLoginSuccess(it)
+                    },
+                    failure = {
+                        Log.d(TAG, "loginWithPassword error=$it")
+                        showErrorToast(it)
                     }
-                },
-                failure = {
-                    Log.d(TAG, "loginWithPassword error=$it")
-                    showErrorToast(it)
-                }
-            )
+                )
+            }
         }
 
         passwordAuthBinding.accountRecovery.setOnClickListener {
@@ -303,52 +322,61 @@ class MainActivity : AppCompatActivity() {
 
         passwordlessAuthBinding.startPasswordless.setOnClickListener {
             val redirectUri = passwordlessAuthBinding.redirectUriInput.text.toString()
+            val byEmail = emailPwdlBinding.text.toString().isNotEmpty()
+            val action =
+                if (byEmail) CaptchaAction.PASSWORDLESS_EMAIL else CaptchaAction.PASSWORDLESS_PHONE
 
-            if (emailPwdlBinding.text.toString().isNotEmpty()) {
-                if (redirectUri != "") {
-                    this.reach5.startPasswordless(
-                        email = emailPwdlBinding.text.toString(),
-                        redirectUrl = redirectUri,
-                        success = { showToast("Email sent - Check your email box") },
-                        failure = {
-                            Log.d(TAG, "signup error=$it")
-                            showErrorToast(it)
-                        },
-                        activity = this
-                    )
+            withCaptcha(action) { captcha ->
+                if (byEmail) {
+                    if (redirectUri != "") {
+                        this.reach5.startPasswordless(
+                            email = emailPwdlBinding.text.toString(),
+                            redirectUrl = redirectUri,
+                            success = { showToast("Email sent - Check your email box") },
+                            failure = {
+                                Log.d(TAG, "signup error=$it")
+                                showErrorToast(it)
+                            },
+                            activity = this,
+                            captcha = captcha,
+                        )
+                    } else {
+                        this.reach5.startPasswordless(
+                            email = emailPwdlBinding.text.toString(),
+                            success = { showToast("Email sent - Check your email box") },
+                            failure = {
+                                Log.d(TAG, "signup error=$it")
+                                showErrorToast(it)
+                            },
+                            activity = this,
+                            captcha = captcha,
+                        )
+                    }
                 } else {
-                    this.reach5.startPasswordless(
-                        email = emailPwdlBinding.text.toString(),
-                        success = { showToast("Email sent - Check your email box") },
-                        failure = {
-                            Log.d(TAG, "signup error=$it")
-                            showErrorToast(it)
-                        },
-                        activity = this
-                    )
-                }
-            } else {
-                if (redirectUri != "") {
-                    this.reach5.startPasswordless(
-                        phoneNumber = phoneNumberPwdlBinding.text.toString(),
-                        redirectUrl = redirectUri,
-                        success = { showToast("Sms sent - Please enter the validation code below") },
-                        failure = {
-                            Log.d(TAG, "signup error=$it")
-                            showErrorToast(it)
-                        },
-                        activity = this
-                    )
-                } else {
-                    this.reach5.startPasswordless(
-                        phoneNumber = phoneNumberPwdlBinding.text.toString(),
-                        success = { showToast("Sms sent - Please enter the validation code below") },
-                        failure = {
-                            Log.d(TAG, "signup error=$it")
-                            showErrorToast(it)
-                        },
-                        activity = this
-                    )
+                    if (redirectUri != "") {
+                        this.reach5.startPasswordless(
+                            phoneNumber = phoneNumberPwdlBinding.text.toString(),
+                            redirectUrl = redirectUri,
+                            success = { showToast("Sms sent - Please enter the validation code below") },
+                            failure = {
+                                Log.d(TAG, "signup error=$it")
+                                showErrorToast(it)
+                            },
+                            activity = this,
+                            captcha = captcha,
+                        )
+                    } else {
+                        this.reach5.startPasswordless(
+                            phoneNumber = phoneNumberPwdlBinding.text.toString(),
+                            success = { showToast("Sms sent - Please enter the validation code below") },
+                            failure = {
+                                Log.d(TAG, "signup error=$it")
+                                showErrorToast(it)
+                            },
+                            activity = this,
+                            captcha = captcha,
+                        )
+                    }
                 }
             }
         }
@@ -565,6 +593,21 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "Login error=$authToken")
             showToast("Login error=$authToken")
         }
+    }
+
+    /**
+     * Runs the captcha challenge for [action], then invokes [call] with the token to hand to the
+     * SDK. With no captcha configured there is no challenge and no token, which is exactly what
+     * the SDK expects for an unprotected call.
+     */
+    private fun withCaptcha(action: String, call: (CaptchaToken?) -> Unit) {
+        val client = captchaClient
+        if (client == null) call(null)
+        else client.token(
+            action = action,
+            onToken = call,
+            onError = { showToast("Captcha: $it") },
+        )
     }
 
     private fun showToast(message: String) {

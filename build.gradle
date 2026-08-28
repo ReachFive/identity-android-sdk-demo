@@ -6,7 +6,7 @@ def ext = rootProject.ext
 
 buildscript {
     ext {
-        sdkVersion = "11.1.0-SNAPSHOT"
+        sdkVersion = "11.1.0-CAPTCHA"
 
         kotlin_version = '2.2.10'
         kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
