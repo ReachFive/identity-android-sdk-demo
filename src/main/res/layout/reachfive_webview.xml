@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="co.reachfive.identity.sdk.core.RedirectionActivity">
+
+    <!-- Primary content from the SDK -->
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <!-- Small visual cue for that visually proves the override when the WebView is loading -->
+    <ProgressBar
+        android:id="@+id/reachfive_loading_indicator"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_centerVertical="true"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorPrimary"
+        android:translationZ="-1dp"
+        tools:visibility="visible" />
+
+</RelativeLayout>

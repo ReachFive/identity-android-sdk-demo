@@ -121,6 +121,8 @@ dependencies {
     implementation "co.reachfive.identity:sdk-webview:$sdkVersion"
     implementation "co.reachfive.identity:sdk-wechat:$sdkVersion"
 
+    implementation "androidx.webkit:webkit:1.13.0"
+
     implementation "androidx.appcompat:appcompat:1.4.2"
     implementation "androidx.cardview:cardview:1.0.0"
     implementation "io.github.cdimascio:java-dotenv:5.2.2"
