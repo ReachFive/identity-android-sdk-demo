@@ -2,6 +2,7 @@ package co.reachfive.identity.sdk.demo.captcha
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.pm.ApplicationInfo
 import android.app.Dialog
 import android.os.Handler
 import android.os.Looper
@@ -10,7 +11,11 @@ import android.view.ViewGroup
 import android.webkit.ConsoleMessage
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.LinearLayout
 import co.reachfive.identity.sdk.core.models.CaptchaFoxToken
@@ -34,15 +39,18 @@ class CaptchaClient(
 
         val html: String
         val wrap: (String) -> CaptchaToken
+        val script: String
         when (conf.provider) {
             CaptchaConf.CAPTCHAFOX -> {
                 html = captchaFoxPage(siteKey)
                 wrap = ::CaptchaFoxToken
+                script = CAPTCHAFOX_SCRIPT
             }
 
             CaptchaConf.RECAPTCHA -> {
                 html = reCaptchaV3Page(siteKey, action)
                 wrap = ::ReCaptchaToken
+                script = RECAPTCHA_SCRIPT
             }
 
             else -> {
@@ -51,20 +59,27 @@ class CaptchaClient(
             }
         }
 
-        render(html, interactive, { value -> onToken(wrap(value)) }, onError)
+        render(html, interactive, script, { value -> onToken(wrap(value)) }, onError)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun render(
         html: String,
         interactive: Boolean,
+        script: String,
         onToken: (String) -> Unit,
         onError: (String) -> Unit,
     ) {
         val webView = WebView(activity)
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
-        // The provider's own diagnostics land here and nowhere else.
+
+        // A challenge that fails to appear reports nothing by itself: no callback fires and the
+        // only symptom is a blank page until the timeout. Say what the page is doing instead.
+        val debuggable =
+            activity.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
+        if (debuggable) WebView.setWebContentsDebuggingEnabled(true)
+
         webView.webChromeClient = object : WebChromeClient() {
             override fun onConsoleMessage(message: ConsoleMessage): Boolean {
                 Log.d(TAG, "captcha page: ${message.message()}")
@@ -92,6 +107,42 @@ class CaptchaClient(
 
         val deliverToken = onToken
         val deliverError = onError
+
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                Log.d(TAG, "captcha page loaded: $url")
+            }
+
+            override fun onReceivedError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                error: WebResourceError?,
+            ) {
+                val url = request?.url?.toString().orEmpty()
+                Log.w(TAG, "captcha resource failed: $url ${error?.description}")
+
+                // Without the provider's script nothing will ever render or call back, so the
+                // challenge would sit blank until it timed out. Fail now, and say why.
+                if (url.startsWith(script)) {
+                    settle { deliverError("captcha script did not load: ${error?.description}") }
+                }
+            }
+
+            override fun onReceivedHttpError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                errorResponse: WebResourceResponse?,
+            ) {
+                val url = request?.url?.toString().orEmpty()
+                val status = errorResponse?.statusCode
+                Log.w(TAG, "captcha resource http $status: $url")
+
+                if (url.startsWith(script)) {
+                    settle { deliverError("captcha script did not load: HTTP $status") }
+                }
+            }
+        }
+
         webView.addJavascriptInterface(object {
             @JavascriptInterface
             fun onToken(token: String) {
@@ -155,7 +206,7 @@ class CaptchaClient(
     private fun reCaptchaV3Page(siteKey: String, action: String) = """
         <!DOCTYPE html><html><head><meta name="viewport" content="width=device-width"></head>
         <body>
-        <script src="https://www.google.com/recaptcha/api.js?render=$siteKey"></script>
+        <script src="$RECAPTCHA_SCRIPT?render=$siteKey"></script>
         <script>
           grecaptcha.ready(function () {
             grecaptcha.execute('$siteKey', { action: '$action' })
@@ -180,12 +231,14 @@ class CaptchaClient(
           function captchaFail(e) { $BRIDGE.onError('captchafox verification failed: ' + e); }
           function captchaExpired() { $BRIDGE.onError('captchafox token expired'); }
         </script>
-        <script src="https://cdn.captchafox.com/api.js" async defer></script>
+        <script src="$CAPTCHAFOX_SCRIPT" async defer></script>
         </body></html>
     """.trimIndent()
 
     private companion object {
         const val TAG = "Captcha"
+        const val RECAPTCHA_SCRIPT = "https://www.google.com/recaptcha/api.js"
+        const val CAPTCHAFOX_SCRIPT = "https://cdn.captchafox.com/api.js"
         const val BRIDGE = "AndroidCaptcha"
         const val TIMEOUT_MS = 60_000L
         const val INTERACTIVE_HEIGHT_RATIO = 0.75f
