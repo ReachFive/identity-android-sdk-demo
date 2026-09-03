@@ -24,6 +24,9 @@ You also need to set the ReachFive client configuration in the `/app/src/main/as
 DOMAIN=my-reachfive-url
 CLIENT_ID=my-reachfive-client-id
 SCHEME=my-reachfive-url-scheme
+CAPTCHA_PROVIDER=captchafox                     # recaptcha | captchafox — empty to disable
+CAPTCHA_SITE_KEY=captcha-site-key               # site key (not the secret)
+CAPTCHA_SITE_URL=https://my-registered-domain   # URL allowed in the provider's configuration
 ```
 
 The URL scheme must follow this pattern: `reachfive://${clientId}/callback`.
