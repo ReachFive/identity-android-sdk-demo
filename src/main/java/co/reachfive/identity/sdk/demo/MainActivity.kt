@@ -305,15 +305,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         passwordAuthBinding.accountRecovery.setOnClickListener {
-            this.reach5.requestAccountRecovery(
-                email = emailPwd(),
-                phoneNumber = phoneNumberPwd(),
-                success = { showToast("Request Account Recovery: code sent") },
-                failure = {
-                    Log.d(TAG, "requestAccountRecovery error=$it")
-                    showErrorToast(it)
-                }
-            )
+            withCaptcha(CaptchaAction.ACCOUNT_RECOVERY) { captcha ->
+                this.reach5.requestAccountRecovery(
+                    email = emailPwd(),
+                    phoneNumber = phoneNumberPwd(),
+                    success = { showToast("Request Account Recovery: code sent") },
+                    failure = {
+                        Log.d(TAG, "requestAccountRecovery error=$it")
+                        showErrorToast(it)
+                    },
+                    captcha = captcha,
+                )
+            }
         }
 
 
