@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         "openid",
         "email",
         "profile",
-        "phone_number",
+        "phone",
         "offline_access",
         "events",
         "mfa",
