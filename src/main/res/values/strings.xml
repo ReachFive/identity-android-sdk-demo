@@ -19,6 +19,7 @@
     <string name="webview_sso_data">Webview SSO data</string>
     <string name="native_logout">Logout WebView + Revoke Tokens</string>
     <string name="login">Login</string>
+    <string name="login_with_webauthn">Login with WebAuthn</string>
     <string name="login_with_passkey">Login with Passkey</string>
     <string name="discoverable_login">Discoverable login</string>
     <string name="login_with_fido2">Login with FIDO2</string>
@@ -39,7 +40,8 @@
     <string name="start_mfa_phone_number_registration">Start Mfa Phone Number Registration</string>
     <string name="signup">Signup</string>
     <string name="account_recovery">Account Recovery</string>
-    <string name="signup_with_passkey">Signup with passkey</string>
+    <string name="signup_with_webauthn">Signup with WebAuthn</string>
+    <string name="signup_with_passkey">Signup with Passkey</string>
     <string name="reset_passkeys">Reset passkeys</string>
     <string name="signup_with_fido2">Signup with FIDO2</string>
     <string name="send_email_verification">send Email verification</string>
