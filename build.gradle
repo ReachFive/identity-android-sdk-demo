@@ -6,7 +6,7 @@ def ext = rootProject.ext
 
 buildscript {
     ext {
-        sdkVersion = "11.1.0-SNAPSHOT"
+        sdkVersion = "11.2.0"
 
         kotlin_version = '2.2.10'
         kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -124,6 +124,8 @@ dependencies {
     implementation "androidx.appcompat:appcompat:1.4.2"
     implementation "androidx.cardview:cardview:1.0.0"
     implementation "io.github.cdimascio:java-dotenv:5.2.2"
+    implementation "com.google.android.recaptcha:recaptcha:18.7.1"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2"
     implementation 'com.google.android.material:material:1.0.0'
 
     implementation ext.kotlin_stdlib

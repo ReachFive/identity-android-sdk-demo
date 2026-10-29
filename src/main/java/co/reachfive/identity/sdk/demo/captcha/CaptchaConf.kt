@@ -14,6 +14,7 @@ data class CaptchaConf(
     companion object {
         const val RECAPTCHA = CaptchaToken.RECAPTCHA
         const val CAPTCHAFOX = CaptchaToken.CAPTCHAFOX
+        const val RECAPTCHA_ENTERPRISE = CaptchaToken.RECAPTCHA_ENTERPRISE
 
         fun of(provider: String?, siteKey: String?, siteUrl: String?): CaptchaConf? =
             if (provider.isNullOrBlank() || siteKey.isNullOrBlank() || siteUrl.isNullOrBlank()) null

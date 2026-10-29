@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import co.reachfive.identity.sdk.core.LoginResultHandler
 import co.reachfive.identity.sdk.core.ReachFive
 import co.reachfive.identity.sdk.core.models.AuthToken
@@ -27,8 +28,9 @@ import co.reachfive.identity.sdk.core.models.responses.SignupResponse
 import co.reachfive.identity.sdk.demo.AuthenticatedActivity.Companion.AUTH_TOKEN
 import co.reachfive.identity.sdk.core.models.CaptchaToken
 import co.reachfive.identity.sdk.demo.captcha.CaptchaAction
+import co.reachfive.identity.sdk.demo.captcha.CaptchaChallenge
 import co.reachfive.identity.sdk.demo.captcha.CaptchaClient
-import co.reachfive.identity.sdk.demo.captcha.CaptchaConf
+import co.reachfive.identity.sdk.demo.captcha.RecaptchaEnterpriseClient
 import co.reachfive.identity.sdk.demo.AuthenticatedActivity.Companion.SDK_CONFIG
 import co.reachfive.identity.sdk.demo.databinding.*
 import co.reachfive.identity.sdk.facebook.FacebookProvider
@@ -36,6 +38,7 @@ import co.reachfive.identity.sdk.google.GoogleProvider
 import co.reachfive.identity.sdk.webview.WebViewProvider
 import co.reachfive.identity.sdk.wechat.WechatProvider
 import io.github.cdimascio.dotenv.dotenv
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -68,14 +71,14 @@ class MainActivity : AppCompatActivity() {
 
     private val sdkConfig = SdkConfig(domain, clientId, scheme, origin)
 
-    // Null unless the `env` file names a provider, a site key and a site URL.
-    private val captchaConf = CaptchaConf.of(
+    // Null unless the `env` file names a provider and whatever that provider needs.
+    private val captchaChallenge = CaptchaChallenge.of(
         provider = dotenv["CAPTCHA_PROVIDER"],
         siteKey = dotenv["CAPTCHA_SITE_KEY"],
         siteUrl = dotenv["CAPTCHA_SITE_URL"],
     )
 
-    private val captchaClient by lazy { captchaConf?.let { CaptchaClient(this, it) } }
+    private val recaptchaEnterprise by lazy { RecaptchaEnterpriseClient(application) }
 
     private val assignedScope = setOf(
         "openid",
@@ -604,13 +607,21 @@ class MainActivity : AppCompatActivity() {
      * the SDK expects for an unprotected call.
      */
     private fun withCaptcha(action: String, call: (CaptchaToken?) -> Unit) {
-        val client = captchaClient
-        if (client == null) call(null)
-        else client.token(
-            action = action,
-            onToken = call,
-            onError = { showToast("Captcha: $it") },
-        )
+        when (val challenge = captchaChallenge) {
+            null -> call(null)
+
+            is CaptchaChallenge.Web -> CaptchaClient(this, challenge.conf).token(
+                action = action,
+                onToken = call,
+                onError = { showToast("Captcha: $it") },
+            )
+
+            is CaptchaChallenge.Native -> lifecycleScope.launch {
+                recaptchaEnterprise
+                    .token(challenge.siteKey, action)
+                    .fold(call) { showToast("Captcha: ${it.message ?: it}") }
+            }
+        }
     }
 
     private fun showToast(message: String) {
