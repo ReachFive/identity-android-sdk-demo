@@ -19,6 +19,7 @@ import co.reachfive.identity.sdk.core.models.CredentialMfaType
 import co.reachfive.identity.sdk.core.models.ReachFiveError
 import co.reachfive.identity.sdk.core.models.SdkConfig
 import co.reachfive.identity.sdk.core.models.requests.LoginMfaConf
+import co.reachfive.identity.sdk.core.models.requests.PasswordlessSignupData
 import co.reachfive.identity.sdk.core.models.requests.ProfileSignupRequest
 import co.reachfive.identity.sdk.core.models.requests.ProfileWebAuthnSignupRequest
 import co.reachfive.identity.sdk.core.models.requests.StartStepUpLoginFlow
@@ -323,9 +324,34 @@ class MainActivity : AppCompatActivity() {
         val emailPwdlBinding = passwordlessAuthBinding.email
         val phoneNumberPwdlBinding = passwordlessAuthBinding.phoneNumber
 
+        fun passwordlessDataValue(field: EditText) = field.text.toString().let {
+            if (it.isBlank())
+                null
+            else
+                it
+        }
+
+        fun passwordlessData(): PasswordlessSignupData? {
+            val customField = passwordlessDataValue(passwordlessAuthBinding.dataCustomField)
+                ?.split("=", limit = 2)
+                ?.takeIf { it.size == 2 }
+                ?.let { (key, value) -> mapOf(key.trim() to value.trim()) }
+
+            val data = PasswordlessSignupData(
+                email = passwordlessDataValue(passwordlessAuthBinding.dataEmail),
+                phoneNumber = passwordlessDataValue(passwordlessAuthBinding.dataPhoneNumber),
+                givenName = passwordlessDataValue(passwordlessAuthBinding.dataGivenName),
+                familyName = passwordlessDataValue(passwordlessAuthBinding.dataFamilyName),
+                customFields = customField,
+            )
+
+            return if (data == PasswordlessSignupData()) null else data
+        }
+
         passwordlessAuthBinding.startPasswordless.setOnClickListener {
             val redirectUri = passwordlessAuthBinding.redirectUriInput.text.toString()
             val byEmail = emailPwdlBinding.text.toString().isNotEmpty()
+            val data = passwordlessData()
             val action =
                 if (byEmail) CaptchaAction.PASSWORDLESS_EMAIL else CaptchaAction.PASSWORDLESS_PHONE
 
@@ -342,6 +368,7 @@ class MainActivity : AppCompatActivity() {
                             },
                             activity = this,
                             captcha = captcha,
+                            data = data,
                         )
                     } else {
                         this.reach5.startPasswordless(
@@ -353,6 +380,7 @@ class MainActivity : AppCompatActivity() {
                             },
                             activity = this,
                             captcha = captcha,
+                            data = data,
                         )
                     }
                 } else {
@@ -367,6 +395,7 @@ class MainActivity : AppCompatActivity() {
                             },
                             activity = this,
                             captcha = captcha,
+                            data = data,
                         )
                     } else {
                         this.reach5.startPasswordless(
@@ -378,6 +407,7 @@ class MainActivity : AppCompatActivity() {
                             },
                             activity = this,
                             captcha = captcha,
+                            data = data,
                         )
                     }
                 }
