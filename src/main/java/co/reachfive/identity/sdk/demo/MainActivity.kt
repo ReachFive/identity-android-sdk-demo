@@ -86,6 +86,7 @@ class MainActivity : AppCompatActivity() {
         "profile",
         "phone",
         "offline_access",
+        "session",
         "events",
         "mfa",
         "full_write"
