@@ -33,6 +33,12 @@
     <string name="redirect_url">Redirect URL for signup template (optional)</string>
     <string name="remove">Remove</string>
     <string name="start_passwordless">Start Passwordless</string>
+    <string name="passwordless_data">Profile data sent at passwordless start (optional)</string>
+    <string name="passwordless_data_given_name">Data: given name</string>
+    <string name="passwordless_data_family_name">Data: family name</string>
+    <string name="passwordless_data_email">Data: email</string>
+    <string name="passwordless_data_phone_number">Data: phone number</string>
+    <string name="passwordless_data_custom_field">Data: custom field (key=value)</string>
     <string name="start_mfa_email_registration">Start Mfa email Registration</string>
     <string name="start_step_up">Start Step up</string>
     <string name="end_step_up">End step up</string>
