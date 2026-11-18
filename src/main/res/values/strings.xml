@@ -28,6 +28,7 @@
     <string name="password">Password</string>
     <string name="phone_number">Phone number</string>
     <string name="phone_number_enrollment_mfa">MFA Phone Number</string>
+    <string name="email_passwordless">Email Passwordless</string>
     <string name="phone_number_passwordless">SMS Passwordless</string>
     <string name="redirect_uri">Redirect URI for Passwordless</string>
     <string name="redirect_url_mfa_email_registration">Redirect URL for mfa email registration</string>
