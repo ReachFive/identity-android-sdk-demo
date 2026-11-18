@@ -17,6 +17,8 @@ import co.reachfive.identity.sdk.core.LoginResultHandler
 import co.reachfive.identity.sdk.core.ReachFive
 import co.reachfive.identity.sdk.core.models.AuthToken
 import co.reachfive.identity.sdk.core.models.CredentialMfaType
+import co.reachfive.identity.sdk.core.models.Email
+import co.reachfive.identity.sdk.core.models.PhoneNumber
 import co.reachfive.identity.sdk.core.models.ReachFiveError
 import co.reachfive.identity.sdk.core.models.SdkConfig
 import co.reachfive.identity.sdk.core.models.requests.LoginMfaConf
@@ -419,7 +421,20 @@ class MainActivity : AppCompatActivity() {
 
         passwordlessAuthBinding.phoneNumberPasswordless.setOnClickListener {
             this.reach5.verifyPasswordless(
-                phoneNumber = phoneNumberPwdlBinding.text.toString(),
+                identifier = PhoneNumber(phoneNumberPwdlBinding.text.toString()),
+                verificationCode = passwordlessAuthBinding.verificationCode.text.toString(),
+                success = { handleLoginSuccess(it) },
+                failure = {
+                    Log.d(TAG, "verifyPasswordless error=$it")
+                    showErrorToast(it)
+                },
+                activity = this
+            )
+        }
+
+        passwordlessAuthBinding.emailPasswordless.setOnClickListener {
+            this.reach5.verifyPasswordless(
+                identifier = Email(emailPwdlBinding.text.toString()),
                 verificationCode = passwordlessAuthBinding.verificationCode.text.toString(),
                 success = { handleLoginSuccess(it) },
                 failure = {
