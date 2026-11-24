@@ -355,66 +355,44 @@ class MainActivity : AppCompatActivity() {
 
         passwordlessAuthBinding.startPasswordless.setOnClickListener {
             val redirectUri = passwordlessAuthBinding.redirectUriInput.text.toString()
-            val byEmail = emailPwdlBinding.text.toString().isNotEmpty()
+            // Forward exactly what is filled (email, phone number, both or none): the SDK decides what is valid.
+            val email = emailPwdlBinding.text.toString().ifBlank { null }
+            val phoneNumber = phoneNumberPwdlBinding.text.toString().ifBlank { null }
             val data = passwordlessData()
             val action =
-                if (byEmail) CaptchaAction.PASSWORDLESS_EMAIL else CaptchaAction.PASSWORDLESS_PHONE
+                if (email != null) CaptchaAction.PASSWORDLESS_EMAIL else CaptchaAction.PASSWORDLESS_PHONE
+            val sentMessage =
+                if (email != null) "Email sent - Check your email box"
+                else "Sms sent - Please enter the validation code below"
 
             withCaptcha(action) { captcha ->
-                if (byEmail) {
-                    if (redirectUri != "") {
-                        this.reach5.startPasswordless(
-                            email = emailPwdlBinding.text.toString(),
-                            redirectUrl = redirectUri,
-                            success = { showToast("Email sent - Check your email box") },
-                            failure = {
-                                Log.d(TAG, "signup error=$it")
-                                showErrorToast(it)
-                            },
-                            activity = this,
-                            captcha = captcha,
-                            data = data,
-                        )
-                    } else {
-                        this.reach5.startPasswordless(
-                            email = emailPwdlBinding.text.toString(),
-                            success = { showToast("Email sent - Check your email box") },
-                            failure = {
-                                Log.d(TAG, "signup error=$it")
-                                showErrorToast(it)
-                            },
-                            activity = this,
-                            captcha = captcha,
-                            data = data,
-                        )
-                    }
+                if (redirectUri != "") {
+                    this.reach5.startPasswordless(
+                        email = email,
+                        phoneNumber = phoneNumber,
+                        redirectUrl = redirectUri,
+                        success = { showToast(sentMessage) },
+                        failure = {
+                            Log.d(TAG, "signup error=$it")
+                            showErrorToast(it)
+                        },
+                        activity = this,
+                        captcha = captcha,
+                        data = data,
+                    )
                 } else {
-                    if (redirectUri != "") {
-                        this.reach5.startPasswordless(
-                            phoneNumber = phoneNumberPwdlBinding.text.toString(),
-                            redirectUrl = redirectUri,
-                            success = { showToast("Sms sent - Please enter the validation code below") },
-                            failure = {
-                                Log.d(TAG, "signup error=$it")
-                                showErrorToast(it)
-                            },
-                            activity = this,
-                            captcha = captcha,
-                            data = data,
-                        )
-                    } else {
-                        this.reach5.startPasswordless(
-                            phoneNumber = phoneNumberPwdlBinding.text.toString(),
-                            success = { showToast("Sms sent - Please enter the validation code below") },
-                            failure = {
-                                Log.d(TAG, "signup error=$it")
-                                showErrorToast(it)
-                            },
-                            activity = this,
-                            captcha = captcha,
-                            data = data,
-                        )
-                    }
+                    this.reach5.startPasswordless(
+                        email = email,
+                        phoneNumber = phoneNumber,
+                        success = { showToast(sentMessage) },
+                        failure = {
+                            Log.d(TAG, "signup error=$it")
+                            showErrorToast(it)
+                        },
+                        activity = this,
+                        captcha = captcha,
+                        data = data,
+                    )
                 }
             }
         }
